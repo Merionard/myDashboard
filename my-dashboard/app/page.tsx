@@ -1,8 +1,11 @@
 import { ModeToggle } from "@/components/theme-toogle";
+import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
+    <Card className="flex-[2]">
+      <CardContent>testeste</CardContent>
+    </Card>
   );
 }
