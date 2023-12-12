@@ -14,23 +14,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
         <Header />
         <Navbar />
 
-        <div className="col-start-2 col-span-5  p-4 ">
-          <div className="flex gap-1 flex-wrap">
-            <Card className="flex-1">
-              <CardContent>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Veniam, doloribus illo aspernatur asperiores nemo aut
-                consequuntur inventore? Eius odit, eaque asperiores corporis eos
-                tempora minima voluptates impedit quis! Dignissimos, sunt? Lorem
-                ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
-                esse beatae repellat ea alias sint perferendis! Nesciunt
-                blanditiis eveniet ipsam officiis? Aliquam, rerum placeat! Quam
-                provident necessitatibus magnam debitis dicta.
-              </CardContent>
-            </Card>
-            {children}
-          </div>
-        </div>
+        <div className="col-start-2 col-span-5  p-4 ">{children}</div>
         <footer className="col-span-6">test</footer>
       </div>
     </NextThemesProvider>

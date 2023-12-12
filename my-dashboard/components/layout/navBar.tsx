@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ModeToggle } from "../theme-toogle";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Link from "next/link";
 
 export const Navbar = () => {
   return (
@@ -12,6 +13,7 @@ export const Navbar = () => {
           alt=""
           className="w-20"
         />
+        <Link href={"/customers"}>Clients</Link>
         <span>Dashboard</span>
         <span>Planificateur</span>
         <span>Planificateur</span>

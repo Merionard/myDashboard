@@ -48,18 +48,29 @@ model User {
 }
 
 model Customer {
+  id              Int @id @default(autoincrement())
+  businessName    String
+  VATnumber       String?
+  Siren           String?
+  Address         Address[]
+  workPeriodLine  WorkPeriodLine?
+  contact         Contact?
+}
+
+model Contact {
   id      Int @id @default(autoincrement())
   name    String
-  Siren   String?
-  Address Address[]
-  workPeriodLine WorkPeriodLine?
+  firstName String
+  email   String
+  customer Customer @relation(fields:[customerId], references:[id])
+  customerId Int
 }
 
 model Address {
   id          Int @id @default(autoincrement())
   poCode      Int
   country     String
-  name        String
+  addressName        String
   number      Int
   customer    Customer @relation(fields: [customerId], references: [id])
   customerId  Int
