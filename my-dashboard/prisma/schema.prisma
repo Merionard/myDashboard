@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  name        String?
+  role        Role     @default(USER)
+  workPeriods WorkPeriod[]
+}
+
+model Customer {
+  id      Int @id @default(autoincrement())
+  name    String
+  Siren   String?
+  Address Address[]
+  workPeriodLine WorkPeriodLine?
+}
+
+model Address {
+  id          Int @id @default(autoincrement())
+  poCode      Int
+  country     String
+  name        String
+  number      Int
+  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  Int
+}
+
+model WorkPeriod {
+id          Int @id @default(autoincrement())
+month       Int
+year        Int
+user        User @relation(fields: [userId], references: [id])
+userId      Int
+lines       WorkPeriodLine[]
+}
+
+model WorkPeriodLine {
+id            Int @id @default(autoincrement())
+customer      Customer @relation(fields: [customerId], references: [id])
+customerId    Int @unique
+workPeriod    WorkPeriod @relation(fields: [workPeriodId], references: [id])
+workPeriodId  Int
+nbDaysWorked  Int
+}
+
+
+
+enum Role {
+  USER
+  ADMIN
+}
