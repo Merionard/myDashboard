@@ -5,7 +5,7 @@ import type {
   ElementType,
   PropsWithChildren,
 } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 
 type PolymorphicAsProp<E extends ElementType> = {
   as?:
