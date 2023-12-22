@@ -63,7 +63,7 @@ model Contact {
   firstName String
   email   String
   customer Customer @relation(fields:[customerId], references:[id])
-  customerId Int
+  customerId Int    @unique
 }
 
 model Address {

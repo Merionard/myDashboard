@@ -15,41 +15,32 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-const formSchema = z.object({
-  raisonSociale: z.string().min(2, {
-    message: "raisonSociale must be at least 2 characters.",
-  }),
-  nom: z.string().min(3).optional(),
-  prenom: z.string()?.min(3).optional(),
-  email: z.string()?.email().optional(),
-  poCode: z.number().min(5).optional(),
-  country: z.string()?.min(3).optional(),
-  addressName: z.string()?.min(10).optional(),
-  addressNumber: z.number()?.min(1).optional(),
-});
+import { customerFormSchema, customerSchema } from "./customerFormSchema";
+import { newCustomerAction } from "./newCustomerAction";
+import { toast } from "sonner";
 
 export function CustomerForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof customerSchema>>({
+    resolver: zodResolver(customerSchema),
     defaultValues: {
-      addressName: "",
-      addressNumber: 0,
-      country: "",
-      email: "",
-      nom: "",
-      poCode: 0,
-      prenom: "",
       raisonSociale: "",
+      contact: {
+        email: "",
+        nom: "",
+        prenom: "",
+      },
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof customerSchema>) {
     console.log(values);
+    const { data, serverError } = await newCustomerAction(values);
+    if (data) {
+      toast.success(data);
+    } else if (serverError) {
+      toast.error(serverError);
+    }
   }
-  // ...
 
   return (
     <Form {...form}>
@@ -73,7 +64,7 @@ export function CustomerForm() {
         <Typography variant={"h2"}>Contact</Typography>
         <FormField
           control={form.control}
-          name="nom"
+          name="contact.nom"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nom</FormLabel>
@@ -86,7 +77,7 @@ export function CustomerForm() {
         />
         <FormField
           control={form.control}
-          name="prenom"
+          name="contact.prenom"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Prénom</FormLabel>
@@ -99,7 +90,7 @@ export function CustomerForm() {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="contact.email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -113,7 +104,7 @@ export function CustomerForm() {
         <Typography variant={"h2"}>Adresse</Typography>
         <FormField
           control={form.control}
-          name="addressName"
+          name="address.addressName"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Rue</FormLabel>
@@ -126,7 +117,7 @@ export function CustomerForm() {
         />
         <FormField
           control={form.control}
-          name="addressNumber"
+          name="address.addressNumber"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Numéro</FormLabel>
@@ -139,7 +130,7 @@ export function CustomerForm() {
         />
         <FormField
           control={form.control}
-          name="country"
+          name="address.country"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Pays</FormLabel>
@@ -152,7 +143,7 @@ export function CustomerForm() {
         />
         <FormField
           control={form.control}
-          name="poCode"
+          name="address.poCode"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Code postal</FormLabel>
