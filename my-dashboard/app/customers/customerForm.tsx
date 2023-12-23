@@ -1,6 +1,4 @@
 "use client";
-
-import { Typography } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,25 +13,26 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { customerFormSchema, customerSchema } from "./customerFormSchema";
+import { customerSchema } from "./customerFormSchema";
 import { newCustomerAction } from "./newCustomerAction";
 import { toast } from "sonner";
+import { CustomerContactForm } from "./customerContactForm";
+import { useState } from "react";
+import { CustomerAddressForm } from "./customerAddressForm";
+import { PlusCircle } from "lucide-react";
 
 export function CustomerForm() {
+  const [showContact, setShowContact] = useState(false);
+  const [showAddress, setShowAddress] = useState(false);
+
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
       raisonSociale: "",
-      contact: {
-        email: "",
-        nom: "",
-        prenom: "",
-      },
     },
   });
 
   async function onSubmit(values: z.infer<typeof customerSchema>) {
-    console.log(values);
     const { data, serverError } = await newCustomerAction(values);
     if (data) {
       toast.success(data);
@@ -41,6 +40,20 @@ export function CustomerForm() {
       toast.error(serverError);
     }
   }
+
+  const toogleContact = () => {
+    if (showContact) {
+      form.unregister("contact");
+    }
+    setShowContact(!showContact);
+  };
+
+  const toogleAddress = () => {
+    if (showAddress) {
+      form.unregister("address");
+    }
+    setShowAddress(!showAddress);
+  };
 
   return (
     <Form {...form}>
@@ -61,100 +74,21 @@ export function CustomerForm() {
             </FormItem>
           )}
         />
-        <Typography variant={"h2"}>Contact</Typography>
-        <FormField
-          control={form.control}
-          name="contact.nom"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nom</FormLabel>
-              <FormControl>
-                <Input placeholder="nom contact" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="contact.prenom"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Prénom</FormLabel>
-              <FormControl>
-                <Input placeholder="prénom contact" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="contact.email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="email contact" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Typography variant={"h2"}>Adresse</Typography>
-        <FormField
-          control={form.control}
-          name="address.addressName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rue</FormLabel>
-              <FormControl>
-                <Input placeholder="rue voie" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address.addressNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Numéro</FormLabel>
-              <FormControl>
-                <Input placeholder="numéro adresse" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address.country"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Pays</FormLabel>
-              <FormControl>
-                <Input placeholder="pays" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address.poCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Code postal</FormLabel>
-              <FormControl>
-                <Input placeholder="Code postal" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
+        <div className="flex flex-col gap-4">
+          <Button type="button" onClick={toogleContact}>
+            <PlusCircle className="mr-2" /> Ajouter Contact
+          </Button>
+          {showContact && <CustomerContactForm form={form} />}
+          <Button type="button" onClick={toogleAddress}>
+            <PlusCircle className="mr-2" />
+            Ajouter Adresse
+          </Button>
+          {showAddress && <CustomerAddressForm form={form} />}
+        </div>
+
+        <div className="flex justify-end">
+          <Button type="submit">Submit</Button>
+        </div>
       </form>
     </Form>
   );
