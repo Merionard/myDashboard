@@ -20,10 +20,20 @@ import { CustomerContactForm } from "./customerContactForm";
 import { useState } from "react";
 import { CustomerAddressForm } from "./customerAddressForm";
 import { PlusCircle } from "lucide-react";
+import { useQuery } from "react-query";
+import { fetchCustomers } from "./apiGouvCustomer";
 
 export function CustomerForm() {
   const [showContact, setShowContact] = useState(false);
   const [showAddress, setShowAddress] = useState(false);
+
+  const { data, isLoading, isError } = useQuery("customers", () =>
+    fetchCustomers("CASTO")
+  );
+
+  if (!isLoading && !isError) {
+    console.log(data);
+  }
 
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
