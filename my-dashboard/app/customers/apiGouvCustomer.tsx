@@ -14,6 +14,7 @@ const customerFromApi = z.array(
     etat_administratif: z.string(),
     nom_complet: z.string(),
     siren: z.string().max(9),
+    matching_etablissements: z.array(etablissement),
   })
 );
 
