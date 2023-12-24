@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { z } from "zod";
 
 const API_CUSTOMER_URL = "https://recherche-entreprises.api.gouv.fr/search";
@@ -25,3 +26,14 @@ export const fetchCustomers = async (customerName: string) => {
   const customers = customerFromApi.parse(data.results);
   return customers;
 };
+
+export function useDebounce<T>(callBack: (...args: [T]) => void, time: number) {
+  const debounce = useRef<null | NodeJS.Timeout>(null);
+
+  return (...args: [T]) => {
+    if (debounce.current) {
+      clearTimeout(debounce.current);
+    }
+    debounce.current = setTimeout(() => callBack(...args), time);
+  };
+}

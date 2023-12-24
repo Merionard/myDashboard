@@ -21,7 +21,7 @@ import { useState } from "react";
 import { CustomerAddressForm } from "./customerAddressForm";
 import { PlusCircle } from "lucide-react";
 import { useQuery } from "react-query";
-import { fetchCustomers } from "./apiGouvCustomer";
+import { fetchCustomers, useDebounce } from "./apiGouvCustomer";
 
 export function CustomerForm() {
   const [showContact, setShowContact] = useState(false);
