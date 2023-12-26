@@ -11,12 +11,14 @@ export const customerAddressSchema = z.object({
   country: z.string().min(2),
   addressName: z.string().min(3),
   addressNumber: z.string().min(1),
+  siret: z.string().length(14),
 });
 
 export const customerSchema = z.object({
   raisonSociale: z.string().min(2, {
     message: "raisonSociale must be at least 2 characters.",
   }),
+  siren: z.string().length(9).optional(),
   contact: customerContactSchema.optional(),
   address: customerAddressSchema.optional(),
 });

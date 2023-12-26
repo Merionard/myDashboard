@@ -21,6 +21,7 @@ import { useState } from "react";
 import { CustomerAddressForm } from "./customerAddressForm";
 import { PlusCircle } from "lucide-react";
 import { CustomerComboBox } from "./searchCustomerComboBox";
+import { Typography } from "@/components/ui/Typography";
 
 export function CustomerForm() {
   const [showContact, setShowContact] = useState(false);
@@ -63,13 +64,27 @@ export function CustomerForm() {
     setShowAddress(true);
     form.register("address");
     form.setValue("address.addressName", etablissement.adresse);
+    form.setValue(
+      "address.addressNumber",
+      etablissement.adresse.substring(0, etablissement.adresse.indexOf(" "))
+    );
+    form.setValue("address.country", "France");
+    form.setValue("address.poCode", etablissement.code_postal);
+    form.setValue("address.siret", etablissement.siret);
+    form.setValue("raisonSociale", etablissement.nom_complet);
+    form.setValue("siren", etablissement.siren);
   };
 
   return (
-    <>
-      <CustomerComboBox
-        callbackOnSelectEtablissement={handleSelectEtablissement}
-      />
+    <div>
+      <Typography variant={"h2"} className="pt-3">
+        Nouveau client
+      </Typography>
+      <div className="flex justify-end mt-3">
+        <CustomerComboBox
+          callbackOnSelectEtablissement={handleSelectEtablissement}
+        />
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -81,9 +96,19 @@ export function CustomerForm() {
                 <FormControl>
                   <Input placeholder="raison sociale" {...field} />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="siren"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numéro siren</FormLabel>
+                <FormControl>
+                  <Input placeholder="Numéro siren" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -101,10 +126,10 @@ export function CustomerForm() {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Enregistrer</Button>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 }

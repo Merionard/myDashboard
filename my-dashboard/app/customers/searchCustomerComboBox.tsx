@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Search } from "lucide-react";
 import { useQuery } from "react-query";
 import { CustomerFromApi, fetchCustomers } from "./apiGouvCustomer";
 import { useRef } from "react";
@@ -49,8 +49,6 @@ export function CustomerComboBox(props: {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [searchValue, setSearchValue] = React.useState("");
-  const [customerSelected, setCustomerSelected] =
-    React.useState<Etablissement | null>(null);
 
   const majSearchValue = useDebounce((val: string) => setSearchValue(val), 500);
   const { customers, isError, isLoading } = useSearchCustomer(searchValue);
@@ -64,7 +62,10 @@ export function CustomerComboBox(props: {
           <Loader2 className="animate-spin" />
         </>
       ) : (
-        "Rechercher un client"
+        <>
+          <Search />
+          Rechercher un client
+        </>
       );
     }
     return value.toLocaleUpperCase();

@@ -21,10 +21,23 @@ export function CustomerAddressForm({ form }: props) {
       <Typography variant={"h2"}>Adresse</Typography>
       <FormField
         control={form.control}
+        name="address.siret"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Numéro Siret</FormLabel>
+            <FormControl>
+              <Input placeholder="Siret" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
         name="address.addressName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Rue</FormLabel>
+            <FormLabel>Adresse</FormLabel>
             <FormControl>
               <Input placeholder="rue voie" {...field} />
             </FormControl>
@@ -47,12 +60,12 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.country"
+        name="address.poCode"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Pays</FormLabel>
+            <FormLabel>Code postal</FormLabel>
             <FormControl>
-              <Input placeholder="pays" {...field} />
+              <Input placeholder="Code postal" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -60,12 +73,12 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.poCode"
+        name="address.country"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Code postal</FormLabel>
+            <FormLabel>Pays</FormLabel>
             <FormControl>
-              <Input placeholder="Code postal" {...field} />
+              <Input placeholder="pays" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
