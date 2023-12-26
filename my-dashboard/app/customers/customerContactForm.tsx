@@ -21,6 +21,7 @@ import { PlusCircle } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { customerSchema } from "./customerFormSchema";
+import { CustomerComboBox } from "./searchCustomerComboBox";
 
 type props = {
   form: UseFormReturn<z.infer<typeof customerSchema>>;

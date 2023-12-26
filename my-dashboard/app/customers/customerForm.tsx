@@ -20,20 +20,11 @@ import { CustomerContactForm } from "./customerContactForm";
 import { useState } from "react";
 import { CustomerAddressForm } from "./customerAddressForm";
 import { PlusCircle } from "lucide-react";
-import { useQuery } from "react-query";
-import { fetchCustomers, useDebounce } from "./apiGouvCustomer";
+import { CustomerComboBox } from "./searchCustomerComboBox";
 
 export function CustomerForm() {
   const [showContact, setShowContact] = useState(false);
   const [showAddress, setShowAddress] = useState(false);
-
-  const { data, isLoading, isError } = useQuery("customers", () =>
-    fetchCustomers("CASTO")
-  );
-
-  if (!isLoading && !isError) {
-    console.log(data);
-  }
 
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
@@ -66,40 +57,43 @@ export function CustomerForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="raisonSociale"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Raison sociale</FormLabel>
-              <FormControl>
-                <Input placeholder="raison sociale" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col gap-4">
-          <Button type="button" onClick={toogleContact}>
-            <PlusCircle className="mr-2" /> Ajouter Contact
-          </Button>
-          {showContact && <CustomerContactForm form={form} />}
-          <Button type="button" onClick={toogleAddress}>
-            <PlusCircle className="mr-2" />
-            Ajouter Adresse
-          </Button>
-          {showAddress && <CustomerAddressForm form={form} />}
-        </div>
+    <>
+      <CustomerComboBox />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="raisonSociale"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Raison sociale</FormLabel>
+                <FormControl>
+                  <Input placeholder="raison sociale" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex flex-col gap-4">
+            <Button type="button" onClick={toogleContact}>
+              <PlusCircle className="mr-2" /> Ajouter Contact
+            </Button>
+            {showContact && <CustomerContactForm form={form} />}
+            <Button type="button" onClick={toogleAddress}>
+              <PlusCircle className="mr-2" />
+              Ajouter Adresse
+            </Button>
+            {showAddress && <CustomerAddressForm form={form} />}
+          </div>
 
-        <div className="flex justify-end">
-          <Button type="submit">Submit</Button>
-        </div>
-      </form>
-    </Form>
+          <div className="flex justify-end">
+            <Button type="submit">Submit</Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 }

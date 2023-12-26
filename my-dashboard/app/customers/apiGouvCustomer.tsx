@@ -10,7 +10,7 @@ const etablissement = z.object({
   siret: z.string().length(14),
 });
 
-const customerFromApi = z.array(
+const customerFromApiSchema = z.array(
   z.object({
     etat_administratif: z.string(),
     nom_complet: z.string(),
@@ -19,21 +19,16 @@ const customerFromApi = z.array(
   })
 );
 
-export const fetchCustomers = async (customerName: string) => {
-  const result = await fetch(API_CUSTOMER_URL + "?q=" + customerName);
+export type CustomerFromApi = z.infer<typeof customerFromApiSchema>;
+
+export const fetchCustomers = async (
+  search: string
+): Promise<CustomerFromApi> => {
+  if (search === "") return [];
+  const result = await fetch(API_CUSTOMER_URL + "?q=" + search);
   const data = await result.json();
 
-  const customers = customerFromApi.parse(data.results);
-  return customers;
+  const customers = customerFromApiSchema.parse(data.results);
+  console.log(customers);
+  return customers as CustomerFromApi;
 };
-
-export function useDebounce<T>(callBack: (...args: [T]) => void, time: number) {
-  const debounce = useRef<null | NodeJS.Timeout>(null);
-
-  return (...args: [T]) => {
-    if (debounce.current) {
-      clearTimeout(debounce.current);
-    }
-    debounce.current = setTimeout(() => callBack(...args), time);
-  };
-}
