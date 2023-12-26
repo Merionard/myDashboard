@@ -20,3 +20,12 @@ export const customerSchema = z.object({
   contact: customerContactSchema.optional(),
   address: customerAddressSchema.optional(),
 });
+
+export type Etablissement = {
+  siren: string;
+  nom_complet: string;
+  code_postal: string;
+  adresse: string;
+  libelle_commune: string;
+  siret: string;
+};

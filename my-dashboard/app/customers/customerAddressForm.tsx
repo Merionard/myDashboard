@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { customerSchema } from "./customerFormSchema";
+import { customerSchema } from "./customerSchemaAndTypes";
 import { z } from "zod";
 import { UseFormReturn } from "react-hook-form";
 

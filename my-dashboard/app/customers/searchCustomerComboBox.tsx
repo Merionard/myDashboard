@@ -20,6 +20,7 @@ import { Check, Loader2 } from "lucide-react";
 import { useQuery } from "react-query";
 import { CustomerFromApi, fetchCustomers } from "./apiGouvCustomer";
 import { useRef } from "react";
+import { Etablissement } from "./customerSchemaAndTypes";
 
 function useSearchCustomer(searchValue: string) {
   const {
@@ -41,16 +42,10 @@ function useDebounce<T>(callBack: (...args: [T]) => void, time: number) {
     debounce.current = setTimeout(() => callBack(...args), time);
   };
 }
-type Etablissement = {
-  siren: string;
-  nom_complet: string;
-  code_postal: string;
-  adresse: string;
-  libelle_commune: string;
-  siret: string;
-};
 
-export function CustomerComboBox() {
+export function CustomerComboBox(props: {
+  callbackOnSelectEtablissement: (etablissement: Etablissement) => void;
+}) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [searchValue, setSearchValue] = React.useState("");
@@ -111,7 +106,7 @@ export function CustomerComboBox() {
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
-                    setCustomerSelected(etablissement);
+                    props.callbackOnSelectEtablissement(etablissement);
                   }}
                 >
                   {etablissement.nom_complet + " " + etablissement.adresse}

@@ -1,6 +1,6 @@
 "use server";
 import { authenticatedAction } from "@/lib/safe-action";
-import { customerSchema } from "./customerFormSchema";
+import { customerSchema } from "./customerSchemaAndTypes";
 import { prisma } from "@/prisma/client";
 
 export const newCustomerAction = authenticatedAction(

@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { PlusCircle } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { customerSchema } from "./customerFormSchema";
+import { customerSchema } from "./customerSchemaAndTypes";
 import { CustomerComboBox } from "./searchCustomerComboBox";
 
 type props = {

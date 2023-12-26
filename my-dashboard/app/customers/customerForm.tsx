@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { customerSchema } from "./customerFormSchema";
+import { Etablissement, customerSchema } from "./customerSchemaAndTypes";
 import { newCustomerAction } from "./newCustomerAction";
 import { toast } from "sonner";
 import { CustomerContactForm } from "./customerContactForm";
@@ -25,6 +25,8 @@ import { CustomerComboBox } from "./searchCustomerComboBox";
 export function CustomerForm() {
   const [showContact, setShowContact] = useState(false);
   const [showAddress, setShowAddress] = useState(false);
+  const [customerSelected, setCustomerSelected] =
+    useState<Etablissement | null>(null);
 
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
@@ -56,9 +58,18 @@ export function CustomerForm() {
     setShowAddress(!showAddress);
   };
 
+  const handleSelectEtablissement = (etablissement: Etablissement) => {
+    setCustomerSelected(etablissement);
+    setShowAddress(true);
+    form.register("address");
+    form.setValue("address.addressName", etablissement.adresse);
+  };
+
   return (
     <>
-      <CustomerComboBox />
+      <CustomerComboBox
+        callbackOnSelectEtablissement={handleSelectEtablissement}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
