@@ -1,21 +1,11 @@
-import Image from "next/image";
-import { useState } from "react";
-import { ModeToggle } from "../theme-toogle";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+import { useState } from "react";
+import { Typography } from "../ui/Typography";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export const Navbar = () => {
+  const [showList, setShowList] = useState(false);
+  console.log(showList);
   return (
     <nav className="row-start-1 row-span-3 h-screen border-r">
       <div className="flex flex-col gap-2 justify-start p-4 h-full">
@@ -24,6 +14,30 @@ export const Navbar = () => {
           alt=""
           className="w-20"
         />
+        <Typography
+          variant={"link"}
+          onClick={() => setShowList((prev) => !prev)}
+        >
+          <div className="flex">
+            Clients {showList ? <ChevronUp /> : <ChevronDown />}
+          </div>
+        </Typography>
+        {showList && (
+          <ul className="flex flex-col ps-3">
+            <li>
+              <span style={{ marginRight: "8px" }}>•</span>
+              <Link href={"/customers"} className="focus:text-blue-700">
+                Liste client
+              </Link>
+            </li>
+            <li>
+              <span style={{ marginRight: "8px" }}>•</span>
+              <Link href={"/customers/new"} className="focus:text-blue-700">
+                Nouveau client
+              </Link>
+            </li>
+          </ul>
+        )}
       </div>
     </nav>
   );
