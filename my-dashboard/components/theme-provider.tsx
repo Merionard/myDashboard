@@ -10,12 +10,14 @@ import { Header } from "./layout/header";
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
-      <div className="grid grid-cols-6 gap-2 bg-background">
+      <div className="min-h-screen flex flex-col">
         <Header />
-        <Navbar />
 
-        <div className="col-start-2 col-span-5  p-4 ">{children}</div>
-        <footer className="col-span-6">test</footer>
+        <div className="flex-1 flex flex-col sm:flex-row">
+          <Navbar />
+          <main className="w-7/12 mx-auto">{children}</main>
+        </div>
+        <footer className="bg-gray-100">Footer</footer>
       </div>
     </NextThemesProvider>
   );

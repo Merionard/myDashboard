@@ -1,11 +1,10 @@
-import { Button } from "../ui/button";
-import { ModeToggle } from "../theme-toogle";
 import { LogInBtn } from "../auth/logInBtn";
+import { ModeToggle } from "../theme-toogle";
 
 export const Header = () => {
   return (
-    <header className=" col-start-2 col-span-5">
-      <div className="flex items-center gap-2 justify-end p-4">
+    <header className="border-b flex justify-center">
+      <div className="w-9/12 flex  justify-end items-center gap-2 p-4">
         <LogInBtn />
         <ModeToggle />
       </div>
