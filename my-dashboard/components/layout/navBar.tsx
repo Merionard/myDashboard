@@ -3,6 +3,17 @@ import { useState } from "react";
 import { ModeToggle } from "../theme-toogle";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 export const Navbar = () => {
   return (
@@ -13,10 +24,6 @@ export const Navbar = () => {
           alt=""
           className="w-20"
         />
-        <Link href={"/customers"}>Clients</Link>
-        <span>Dashboard</span>
-        <span>Planificateur</span>
-        <span>Planificateur</span>
       </div>
     </nav>
   );

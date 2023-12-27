@@ -1,15 +1,13 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { getRequiredAuthSession } from "@/lib/auth";
-import { CustomerForm } from "./customerForm";
+import { prisma } from "@/prisma/client";
+import { CustomerDataTable } from "./customerDatatable";
+import { columns } from "./columnsDatatable";
 
-export default async function NewCustomer() {
-  const session = getRequiredAuthSession();
+export default async function CustomersList() {
+  const customers = await prisma.customer.findMany();
 
   return (
-    <Card>
-      <CardContent>
-        <CustomerForm />
-      </CardContent>
-    </Card>
+    <div className="container mx-auto py-10">
+      <CustomerDataTable columns={columns} data={customers} />
+    </div>
   );
 }

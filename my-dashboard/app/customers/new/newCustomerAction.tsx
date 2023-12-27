@@ -9,6 +9,7 @@ export const newCustomerAction = authenticatedAction(
     await prisma.customer.create({
       data: {
         businessName: data.raisonSociale,
+        Siren: data.siren,
         Address: data.address
           ? {
               create: {

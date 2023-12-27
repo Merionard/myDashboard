@@ -62,7 +62,7 @@ model Contact {
   name    String
   firstName String
   email   String
-  customer Customer @relation(fields:[customerId], references:[id])
+  customer Customer @relation(fields:[customerId], references:[id], onDelete:Cascade)
   customerId Int    @unique
 }
 
@@ -72,7 +72,7 @@ model Address {
   country     String
   addressName        String
   number      Int
-  customer    Customer @relation(fields: [customerId], references: [id])
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete:Cascade)
   customerId  Int
 }
 
