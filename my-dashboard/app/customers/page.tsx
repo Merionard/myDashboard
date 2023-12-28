@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/client";
-import { CustomerDataTable } from "./customerDatatable";
+import { DataTable } from "../../components/dataTable";
 import { columns } from "./columnsDatatable";
 
 export default async function CustomersList() {
@@ -7,7 +7,7 @@ export default async function CustomersList() {
 
   return (
     <div className="container mx-auto py-10">
-      <CustomerDataTable columns={columns} data={customers} />
+      <DataTable columns={columns} data={customers} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
+import { Typography } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -11,23 +11,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
+import { CustomerAddressForm } from "./customerAddressForm";
+import { CustomerContactForm } from "./customerContactForm";
 import { Etablissement, customerSchema } from "./customerSchemaAndTypes";
 import { newCustomerAction } from "./newCustomerAction";
-import { toast } from "sonner";
-import { CustomerContactForm } from "./customerContactForm";
-import { useState } from "react";
-import { CustomerAddressForm } from "./customerAddressForm";
-import { PlusCircle } from "lucide-react";
 import { CustomerComboBox } from "./searchCustomerComboBox";
-import { Typography } from "@/components/ui/Typography";
 
 export function CustomerForm() {
   const [showContact, setShowContact] = useState(false);
   const [showAddress, setShowAddress] = useState(false);
-  const [customerSelected, setCustomerSelected] =
-    useState<Etablissement | null>(null);
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
@@ -39,6 +39,8 @@ export function CustomerForm() {
   async function onSubmit(values: z.infer<typeof customerSchema>) {
     const { data, serverError } = await newCustomerAction(values);
     if (data) {
+      router.push("/customers");
+      router.refresh();
       toast.success(data);
     } else if (serverError) {
       toast.error(serverError);
@@ -60,7 +62,6 @@ export function CustomerForm() {
   };
 
   const handleSelectEtablissement = (etablissement: Etablissement) => {
-    setCustomerSelected(etablissement);
     setShowAddress(true);
     form.register("address");
     form.setValue("address.addressName", etablissement.adresse);
