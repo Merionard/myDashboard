@@ -13,9 +13,9 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <div className="flex-1 flex flex-col sm:flex-row">
+        <div className="flex-1 flex flex-col sm:flex-row ">
           <Navbar />
-          <main className="w-7/12 mx-auto">{children}</main>
+          <main className="w-3/4 mx-auto  p-4">{children}</main>
         </div>
         <footer className="bg-gray-100">Footer</footer>
       </div>

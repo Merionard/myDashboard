@@ -1,42 +1,42 @@
+import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Typography } from "../ui/Typography";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 export const Navbar = () => {
   const [showList, setShowList] = useState(false);
   console.log(showList);
   return (
-    <nav className="sm:w-2/12">
-      <div className="flex flex-col gap-2 justify-start items-center p-4 h-full ms-5">
-        <img
-          src="https://img.freepik.com/premium-vector/statistics-icon-simple-element-illustration-statistics-concept-symbol-design-from-analytics-research-collection-can-be-used-web-mobile_159242-12227.jpg?size=626&ext=jpg&ga=GA1.1.378605246.1701363860&semt=ais"
-          alt=""
-          className="w-20"
-        />
+    <nav className="w-2/12">
+      <div className="flex flex-col gap-2 justify-start  p-4 h-full ">
         <Typography
           variant={"link"}
           onClick={() => setShowList((prev) => !prev)}
         >
-          <div className="flex">
-            Clients {showList ? <ChevronUp /> : <ChevronDown />}
+          <div className="relative flex w-full cursor-pointer items-center justify-between py-1 pl-2 text-left">
+            Clients{" "}
+            <div className="transition ease-in-out delay-150 hover:rotate-90">
+              <ChevronRight />
+            </div>
           </div>
         </Typography>
-        {showList && (
-          <ul className="flex flex-col items-end  ">
-            <div className="border-l flex flex-col text-end">
-              <div>
-                <Link href={"/customers"} className="focus:text-blue-700">
-                  Liste client
-                </Link>
-              </div>
 
-              <div>
-                <Link href={"/customers/new"} className="focus:text-blue-700">
-                  Nouveau client
-                </Link>
-              </div>
-            </div>
+        {showList && (
+          <ul
+            className={`px-0.5 last-of-type:mb-0 mr-6 border-l border-gray-200 pl-3 dark:border-gray-300 ml-5 transform ${
+              showList ? "translate-y-6" : ""
+            } transition duration-300`}
+          >
+            <li className="mb-2">
+              <Link href={"/customers"} className="focus:text-blue-700">
+                Liste client
+              </Link>
+            </li>
+            <li className="border-transparent hover:border-blue-500 focus:border-blue-500">
+              <Link href={"/customers/new"} className="focus:text-blue-700">
+                Nouveau client
+              </Link>
+            </li>
           </ul>
         )}
       </div>
