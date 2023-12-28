@@ -8,7 +8,7 @@ export default async function NewCustomer() {
   return (
     <Card>
       <CardContent>
-        <CustomerForm />
+        <CustomerForm customer={null} />
       </CardContent>
     </Card>
   );

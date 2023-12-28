@@ -62,17 +62,17 @@ model Contact {
   name    String
   firstName String
   email   String
-  customer Customer @relation(fields:[customerId], references:[id], onDelete:Cascade)
+  customer Customer @relation(fields:[customerId], references:[id], onDelete:Cascade, onUpdate: Cascade)
   customerId Int    @unique
 }
 
 model Address {
   id          Int @id @default(autoincrement())
-  poCode      Int
+  poCode      String
   country     String
   addressName        String
-  number      Int
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete:Cascade)
+  number      String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   customerId  Int
   siret       String?
 }

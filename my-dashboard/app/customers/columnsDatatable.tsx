@@ -62,7 +62,7 @@ const ActionMenu = (props: { id: number }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem>
-            <Link href={`/cusomers/edit/${props.id}`}>Editer client</Link>
+            <Link href={`/customers/edit/${props.id}`}>Editer client</Link>
           </DropdownMenuItem>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem>Supprimer client</DropdownMenuItem>

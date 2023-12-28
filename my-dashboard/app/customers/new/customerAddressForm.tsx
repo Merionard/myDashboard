@@ -21,7 +21,7 @@ export function CustomerAddressForm({ form }: props) {
       <Typography variant={"h2"}>Adresse</Typography>
       <FormField
         control={form.control}
-        name="address.siret"
+        name="firstAddress.siret"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Numéro Siret</FormLabel>
@@ -34,7 +34,7 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.addressName"
+        name="firstAddress.addressName"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Adresse</FormLabel>
@@ -47,7 +47,7 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.number"
+        name="firstAddress.number"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Numéro</FormLabel>
@@ -60,7 +60,7 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.poCode"
+        name="firstAddress.poCode"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Code postal</FormLabel>
@@ -73,7 +73,7 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.country"
+        name="firstAddress.country"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Pays</FormLabel>

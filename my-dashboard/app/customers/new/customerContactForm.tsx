@@ -2,13 +2,6 @@
 
 import { Typography } from "@/components/ui/Typography";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import {
   FormControl,
   FormField,
   FormItem,
@@ -16,12 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { PlusCircle } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { customerSchema } from "./customerSchemaAndTypes";
-import { CustomerComboBox } from "./searchCustomerComboBox";
 
 type props = {
   form: UseFormReturn<z.infer<typeof customerSchema>>;
@@ -33,7 +23,7 @@ export function CustomerContactForm({ form }: props) {
       <Typography variant={"h2"}>Contact</Typography>
       <FormField
         control={form.control}
-        name="contact.nom"
+        name="contact.name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Nom</FormLabel>
@@ -46,7 +36,7 @@ export function CustomerContactForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="contact.prenom"
+        name="contact.firstName"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Prénom</FormLabel>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const customerContactSchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(3),
   firstName: z.string().min(3),
   email: z.string().email(),
@@ -15,12 +16,14 @@ export const customerAddressSchema = z.object({
 });
 
 export const customerSchema = z.object({
+  id: z.number().optional(),
   businessName: z.string().min(2, {
     message: "raisonSociale must be at least 2 characters.",
   }),
   siren: z.string().length(9).optional(),
-  contact: customerContactSchema.optional(),
-  address: customerAddressSchema.optional(),
+  contact: customerContactSchema.nullable().optional(),
+  firstAddress: customerAddressSchema.optional(),
+  address: z.array(customerAddressSchema),
 });
 
 export type Etablissement = {

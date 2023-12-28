@@ -17,14 +17,18 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { newCustomerAction, updateCustomerAction } from "./customerActions";
 import { CustomerAddressForm } from "./customerAddressForm";
 import { CustomerContactForm } from "./customerContactForm";
 import { Etablissement, customerSchema } from "./customerSchemaAndTypes";
-import { newCustomerAction } from "./customerActions";
 import { CustomerComboBox } from "./searchCustomerComboBox";
 
-export function CustomerForm() {
-  const [showContact, setShowContact] = useState(false);
+export function CustomerForm(props: {
+  customer: z.infer<typeof customerSchema> | null;
+}) {
+  const [showContact, setShowContact] = useState(
+    props.customer != null && props.customer.contact != null
+  );
   const [showAddress, setShowAddress] = useState(false);
 
   const router = useRouter();
@@ -32,12 +36,18 @@ export function CustomerForm() {
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      businessName: "",
+      businessName: props.customer ? props.customer.businessName : "",
+      id: props.customer ? props.customer.id : undefined,
+      siren: props.customer ? props.customer.siren : undefined,
+      contact: props.customer ? props.customer.contact : undefined,
+      address: props.customer ? props.customer.address : [],
     },
   });
 
   async function onSubmit(values: z.infer<typeof customerSchema>) {
-    const { data, serverError } = await newCustomerAction(values);
+    const { data, serverError } = props.customer
+      ? await updateCustomerAction(values)
+      : await newCustomerAction(values);
     if (data) {
       router.push("/customers");
       router.refresh();
@@ -48,7 +58,7 @@ export function CustomerForm() {
   }
 
   const toogleContact = () => {
-    if (showContact) {
+    if (showContact && props.customer == null) {
       form.unregister("contact");
     }
     setShowContact(!showContact);
@@ -63,15 +73,15 @@ export function CustomerForm() {
 
   const handleSelectEtablissement = (etablissement: Etablissement) => {
     setShowAddress(true);
-    form.register("address");
-    form.setValue("address.addressName", etablissement.adresse);
+    form.register("firstAddress");
+    form.setValue("firstAddress.addressName", etablissement.adresse);
     form.setValue(
-      "address.number",
+      "firstAddress.number",
       etablissement.adresse.substring(0, etablissement.adresse.indexOf(" "))
     );
-    form.setValue("address.country", "France");
-    form.setValue("address.poCode", etablissement.code_postal);
-    form.setValue("address.siret", etablissement.siret);
+    form.setValue("firstAddress.country", "France");
+    form.setValue("firstAddress.poCode", etablissement.code_postal);
+    form.setValue("firstAddress.siret", etablissement.siret);
     form.setValue("businessName", etablissement.nom_complet);
     form.setValue("siren", etablissement.siren);
   };
