@@ -50,9 +50,9 @@ model User {
 model Customer {
   id              Int @id @default(autoincrement())
   businessName    String
-  VATnumber       String?
-  Siren           String?
-  Address         Address[]
+  vatNumber       String?
+  siren           String?
+  address         Address[]
   workPeriodLine  WorkPeriodLine?
   contact         Contact?
 }
@@ -74,6 +74,7 @@ model Address {
   number      Int
   customer    Customer @relation(fields: [customerId], references: [id], onDelete:Cascade)
   customerId  Int
+  siret       String?
 }
 
 model WorkPeriod {

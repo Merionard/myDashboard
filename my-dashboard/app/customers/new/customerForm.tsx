@@ -20,7 +20,7 @@ import * as z from "zod";
 import { CustomerAddressForm } from "./customerAddressForm";
 import { CustomerContactForm } from "./customerContactForm";
 import { Etablissement, customerSchema } from "./customerSchemaAndTypes";
-import { newCustomerAction } from "./newCustomerAction";
+import { newCustomerAction } from "./customerActions";
 import { CustomerComboBox } from "./searchCustomerComboBox";
 
 export function CustomerForm() {
@@ -32,7 +32,7 @@ export function CustomerForm() {
   const form = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      raisonSociale: "",
+      businessName: "",
     },
   });
 
@@ -66,13 +66,13 @@ export function CustomerForm() {
     form.register("address");
     form.setValue("address.addressName", etablissement.adresse);
     form.setValue(
-      "address.addressNumber",
+      "address.number",
       etablissement.adresse.substring(0, etablissement.adresse.indexOf(" "))
     );
     form.setValue("address.country", "France");
     form.setValue("address.poCode", etablissement.code_postal);
     form.setValue("address.siret", etablissement.siret);
-    form.setValue("raisonSociale", etablissement.nom_complet);
+    form.setValue("businessName", etablissement.nom_complet);
     form.setValue("siren", etablissement.siren);
   };
 
@@ -90,7 +90,7 @@ export function CustomerForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="raisonSociale"
+            name="businessName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Raison sociale</FormLabel>

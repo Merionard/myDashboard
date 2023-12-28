@@ -47,7 +47,7 @@ export function CustomerAddressForm({ form }: props) {
       />
       <FormField
         control={form.control}
-        name="address.addressNumber"
+        name="address.number"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Numéro</FormLabel>

@@ -29,8 +29,8 @@ import { toast } from "sonner";
 
 export const columns: ColumnDef<Customer>[] = [
   { accessorKey: "businessName", header: "Nom" },
-  { accessorKey: "Siren", header: "Siren" },
-  { accessorKey: "VATnumber", header: "Numéro TVA" },
+  { accessorKey: "siren", header: "Siren" },
+  { accessorKey: "vatNumber", header: "Numéro TVA" },
   {
     id: "actions",
     header: "Actions",
@@ -61,14 +61,14 @@ const ActionMenu = (props: { id: number }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
+          <DropdownMenuItem>
+            <Link href={`/cusomers/edit/${props.id}`}>Editer client</Link>
+          </DropdownMenuItem>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem>Supprimer client</DropdownMenuItem>
           </AlertDialogTrigger>
 
           <DropdownMenuSeparator />
-          <DropdownMenuItem>View customer</DropdownMenuItem>
-          <DropdownMenuItem>View payment details</DropdownMenuItem>
         </DropdownMenuContent>
         <AlertDialogContent>
           <AlertDialogHeader>

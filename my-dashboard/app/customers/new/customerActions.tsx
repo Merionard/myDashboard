@@ -8,15 +8,16 @@ export const newCustomerAction = authenticatedAction(
   async (data) => {
     await prisma.customer.create({
       data: {
-        businessName: data.raisonSociale,
-        Siren: data.siren,
-        Address: data.address
+        businessName: data.businessName,
+        siren: data.siren,
+        address: data.address
           ? {
               create: {
                 addressName: data.address.addressName,
                 country: data.address.country,
-                number: Number(data.address.addressNumber),
+                number: Number(data.address.number),
                 poCode: Number(data.address.poCode),
+                siret: data.address.siret,
               },
             }
           : undefined,
@@ -24,8 +25,8 @@ export const newCustomerAction = authenticatedAction(
         contact: data.contact
           ? {
               create: {
-                name: data.contact?.nom,
-                firstName: data.contact.prenom,
+                name: data.contact?.name,
+                firstName: data.contact.firstName,
                 email: data.contact.email,
               },
             }
@@ -33,6 +34,11 @@ export const newCustomerAction = authenticatedAction(
       },
     });
 
-    return "le client " + data.raisonSociale + " a été créé avec succès!";
+    return "le client " + data.businessName + " a été créé avec succès!";
   }
+);
+
+export const updateCustomerAction = authenticatedAction(
+  customerSchema,
+  async (data) => {}
 );
