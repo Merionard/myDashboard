@@ -13,7 +13,7 @@ export const Navbar = () => {
           variant={"link"}
           onClick={() => setShowList((prev) => !prev)}
         >
-          <div className="relative flex w-full cursor-pointer items-center justify-between py-1 pl-2 text-left">
+          <div className="relative flex w-full cursor-pointer items-center justify-between py-1  text-left">
             Clients{" "}
             <div className="transition ease-in-out delay-150 hover:rotate-90">
               <ChevronRight />
@@ -32,18 +32,20 @@ export const Navbar = () => {
                 Liste client
               </Link>
             </li>
-            <li className="border-transparent hover:border-blue-500 focus:border-blue-500">
+            <li className="border-transparent hover:border-blue-500 focus:border-blue-500 mb-3">
               <Link href={"/customers/new"} className="focus:text-blue-700">
                 Nouveau client
               </Link>
             </li>
           </ul>
         )}
-        <Typography variant={"link"}>
-          <Link href={"/cra"} className="focus:text-blue-700">
-            CRA
-          </Link>
-        </Typography>
+
+        <Link
+          href={"/cra"}
+          className="text-indigo-500 font-medium hover:underline cursor-pointer"
+        >
+          CRA
+        </Link>
       </div>
     </nav>
   );

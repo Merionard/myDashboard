@@ -2,24 +2,25 @@
 
 import { User } from "@prisma/client";
 import { useState } from "react";
+import { DateHeader } from "./dateHeader";
 
 type Props = {
   users: User[];
 };
-const currentDate = new Date();
-const daysInMonth = new Date(
-  currentDate.getFullYear(),
-  currentDate.getMonth() + 1,
-  0
-).getDate();
-const datesOfCurrentMonth: Array<Date> = [];
-for (let i = 1; i <= daysInMonth; i++) {
-  const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
-  datesOfCurrentMonth.push(date);
-}
 
 export default function CraTable({ users }: Props) {
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [year, setYear] = useState(new Date().getFullYear());
   const [showModal, setShowModal] = useState(false);
+
+  const currentDate = new Date(year, month + 1, 0);
+  const daysInMonth = currentDate.getDate();
+
+  const datesOfCurrentMonth: Array<Date> = [];
+  for (let i = 1; i <= daysInMonth; i++) {
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+    datesOfCurrentMonth.push(date);
+  }
 
   const columns = [];
   for (let i = 1; i <= daysInMonth; i++) {
@@ -39,6 +40,12 @@ export default function CraTable({ users }: Props) {
   const closeModal = () => setShowModal(false);
   return (
     <>
+      <DateHeader
+        changeMonth={setMonth}
+        changeYear={setYear}
+        month={month}
+        year={year}
+      />
       <table className="min-w-full border border-collapse border-gray-300">
         <thead>
           <tr>{columns}</tr>
