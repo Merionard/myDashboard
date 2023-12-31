@@ -39,6 +39,11 @@ export const Navbar = () => {
             </li>
           </ul>
         )}
+        <Typography variant={"link"}>
+          <Link href={"/cra"} className="focus:text-blue-700">
+            CRA
+          </Link>
+        </Typography>
       </div>
     </nav>
   );

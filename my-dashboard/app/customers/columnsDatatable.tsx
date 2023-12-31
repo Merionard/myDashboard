@@ -21,15 +21,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Customer } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { deleteCustomerAction } from "./deleteCustomerAction";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export const columns: ColumnDef<Customer>[] = [
-  { accessorKey: "businessName", header: "Nom" },
-  { accessorKey: "siren", header: "Siren" },
+  {
+    accessorKey: "businessName",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nom
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "siren",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Siren
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
   { accessorKey: "vatNumber", header: "Numéro TVA" },
   {
     id: "actions",
