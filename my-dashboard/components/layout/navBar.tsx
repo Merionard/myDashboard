@@ -7,7 +7,7 @@ export const Navbar = () => {
   const [showList, setShowList] = useState(false);
   console.log(showList);
   return (
-    <nav className="w-2/12">
+    <nav className="w-[250px]">
       <div className="flex flex-col gap-2 justify-start  p-4 h-full ">
         <Typography
           variant={"link"}

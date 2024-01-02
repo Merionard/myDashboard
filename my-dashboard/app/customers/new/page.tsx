@@ -6,10 +6,12 @@ export default async function NewCustomer() {
   const session = getRequiredAuthSession();
 
   return (
-    <Card>
-      <CardContent>
-        <CustomerForm customer={null} />
-      </CardContent>
-    </Card>
+    <div className="container mx-auto py-10">
+      <Card>
+        <CardContent>
+          <CustomerForm customer={null} />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

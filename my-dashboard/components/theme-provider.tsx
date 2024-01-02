@@ -15,7 +15,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
         <div className="flex-1 flex flex-col sm:flex-row ">
           <Navbar />
-          <main className="w-3/4 mx-auto  p-4">{children}</main>
+          <main className="w-full mx-auto  p-4">{children}</main>
         </div>
         <footer className="bg-gray-100">Footer</footer>
       </div>

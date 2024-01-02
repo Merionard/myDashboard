@@ -3,6 +3,15 @@
 import { User } from "@prisma/client";
 import { useState } from "react";
 import { DateHeader } from "./dateHeader";
+import clsx from "clsx";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type Props = {
   users: User[];
@@ -25,9 +34,9 @@ export default function CraTable({ users }: Props) {
   const columns = [];
   for (let i = 1; i <= daysInMonth; i++) {
     columns.push(
-      <th className="border p-2" key={i}>
+      <TableHead className="border" key={i}>
         {i}
-      </th>
+      </TableHead>
     );
   }
   columns.unshift(<th key={0}></th>);
@@ -35,6 +44,10 @@ export default function CraTable({ users }: Props) {
   const handleClickOnCell = (date: Date) => {
     setShowModal(true);
     console.log(date);
+  };
+
+  const isWeekEnd = (date: Date) => {
+    return date.getDay() === 6 || date.getDay() === 0;
   };
 
   const closeModal = () => setShowModal(false);
@@ -46,27 +59,32 @@ export default function CraTable({ users }: Props) {
         month={month}
         year={year}
       />
-      <table className="min-w-full border border-collapse border-gray-300">
-        <thead>
-          <tr>{columns}</tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHeader>
+          <TableRow>{columns}</TableRow>
+        </TableHeader>
+        <TableBody>
           {users.map((user) => (
-            <tr key={user.id} className="even:bg-gray-50">
-              <td className="border p-2">{user.name}</td>
+            <TableRow key={user.id}>
+              <TableCell className="border p-2 min-w-[200px] h-12">
+                {user.name}
+              </TableCell>
               {datesOfCurrentMonth.map((date) => (
-                <td
+                <TableCell
                   key={date.toDateString()}
                   onClick={() => handleClickOnCell(date)}
-                  className="border p-2"
+                  className={clsx("border p-1", {
+                    "bg-gray-500": isWeekEnd(date),
+                    "cursor-pointer": !isWeekEnd(date),
+                  })}
                 >
                   {}
-                </td>
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </>
   );
 }

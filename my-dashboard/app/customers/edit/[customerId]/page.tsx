@@ -19,10 +19,12 @@ export default async function Page({
   const zodCustomer = customerSchema.parse(customer);
 
   return (
-    <Card>
-      <CardContent>
-        <CustomerForm customer={zodCustomer} />
-      </CardContent>
-    </Card>
+    <div className="container mx-auto py-10">
+      <Card>
+        <CardContent>
+          <CustomerForm customer={zodCustomer} />
+        </CardContent>
+      </Card>
+    </div>
   );
 }
