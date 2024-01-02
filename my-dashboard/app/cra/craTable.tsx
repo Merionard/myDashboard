@@ -1,9 +1,5 @@
 "use client";
 
-import { Customer, User, WorkPeriod } from "@prisma/client";
-import { useState } from "react";
-import { DateHeader } from "./dateHeader";
-import clsx from "clsx";
 import {
   Table,
   TableBody,
@@ -12,6 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Customer, User } from "@prisma/client";
+import clsx from "clsx";
+import { useState } from "react";
+import { DateHeader } from "./dateHeader";
 
 type Props = {
   users: User[];
