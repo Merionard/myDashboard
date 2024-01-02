@@ -1,26 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import CraTable from "./craTable";
+import { getServerSession } from "next-auth";
+import { getSession } from "next-auth/react";
+import { getRequiredAuthSession } from "@/lib/auth";
+import { create } from "domain";
 
 export default async function Page() {
   const prisma = new PrismaClient();
   const users = await prisma.user.findMany();
-  const currentDate = new Date();
-  const daysInMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0
-  ).getDate();
-  const datesOfCurrentMonth: Array<Date> = [];
-  for (let i = 1; i <= daysInMonth; i++) {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
-    datesOfCurrentMonth.push(date);
-  }
+  const session = await getRequiredAuthSession();
+  const customers = await prisma.customer.findMany();
 
-  const columns = [];
-  for (let i = 1; i <= daysInMonth; i++) {
-    columns.push(<th key={i}>{i}</th>);
-  }
-  columns.unshift(<th key={0}></th>);
-
-  return <CraTable users={users} />;
+  return (
+    <CraTable users={users} userId={session.user.id} customers={customers} />
+  );
 }

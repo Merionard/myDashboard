@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@prisma/client";
+import { Customer, User, WorkPeriod } from "@prisma/client";
 import { useState } from "react";
 import { DateHeader } from "./dateHeader";
 import clsx from "clsx";
@@ -15,12 +15,22 @@ import {
 
 type Props = {
   users: User[];
+  userId: string;
+  customers: Customer[];
 };
 
-export default function CraTable({ users }: Props) {
+export default function CraTable({ users, userId }: Props) {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const [showModal, setShowModal] = useState(false);
+
+  fetch(`/api/workPeriod?userId=${userId}&month=${month}&year=${year}`)
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+
+  const onChangeMonth = (newMonth: number) => {
+    setMonth(newMonth);
+  };
 
   const currentDate = new Date(year, month + 1, 0);
   const daysInMonth = currentDate.getDate();
@@ -41,9 +51,8 @@ export default function CraTable({ users }: Props) {
   }
   columns.unshift(<th key={0}></th>);
 
-  const handleClickOnCell = (date: Date) => {
+  const handleClickOnCell = async (date: Date) => {
     setShowModal(true);
-    console.log(date);
   };
 
   const isWeekEnd = (date: Date) => {
@@ -54,8 +63,8 @@ export default function CraTable({ users }: Props) {
   return (
     <>
       <DateHeader
-        changeMonth={setMonth}
-        changeYear={setYear}
+        changeMonth={onChangeMonth}
+        setYear={setYear}
         month={month}
         year={year}
       />

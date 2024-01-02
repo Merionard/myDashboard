@@ -6,22 +6,22 @@ type Props = {
   month: number;
   year: number;
   changeMonth: (month: number) => void;
-  changeYear: (year: number) => void;
+  setYear: (year: number) => void;
 };
 
-export const DateHeader = ({ month, year, changeMonth, changeYear }: Props) => {
+export const DateHeader = ({ month, year, changeMonth, setYear }: Props) => {
   const handleChangeMonth = (event: React.ChangeEvent<HTMLSelectElement>) => {
     changeMonth(parseInt(event.target.value, 10));
   };
 
   const handleChangeYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    changeYear(parseInt(event.target.value, 10));
+    setYear(parseInt(event.target.value, 10));
   };
 
   const handlePrev = () => {
     if (month === 0) {
       changeMonth(11);
-      changeYear(year - 1);
+      setYear(year - 1);
     } else {
       changeMonth(month - 1);
     }
@@ -30,7 +30,7 @@ export const DateHeader = ({ month, year, changeMonth, changeYear }: Props) => {
   const handleNext = () => {
     if (month === 11) {
       changeMonth(0);
-      changeYear(year + 1);
+      setYear(year + 1);
     } else {
       changeMonth(month + 1);
     }
@@ -63,7 +63,7 @@ export const DateHeader = ({ month, year, changeMonth, changeYear }: Props) => {
         </select>
         <YearSelector
           year={year}
-          OnChangeYear={(event: React.ChangeEvent<HTMLSelectElement>) =>
+          changeYear={(event: React.ChangeEvent<HTMLSelectElement>) =>
             handleChangeYear(event)
           }
           className="form-select"

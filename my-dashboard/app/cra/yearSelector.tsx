@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 function YearSelector(props: {
   year: number;
-  OnChangeYear: (e: ChangeEvent<HTMLSelectElement>) => void;
+  changeYear: (e: ChangeEvent<HTMLSelectElement>) => void;
   className: string;
 }) {
   const years = [];
@@ -13,7 +13,7 @@ function YearSelector(props: {
   }
   return (
     <select
-      onChange={props.OnChangeYear}
+      onChange={(e) => props.changeYear(e)}
       value={props.year}
       {...props}
       style={{ width: "130px" }}

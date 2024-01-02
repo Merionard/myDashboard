@@ -53,7 +53,6 @@ model Customer {
   vatNumber       String?
   siren           String?
   address         Address[]
-  workPeriodLine  WorkPeriodLine?
   contact         Contact?
 }
 
@@ -88,8 +87,7 @@ lines       WorkPeriodLine[]
 
 model WorkPeriodLine {
 id            Int @id @default(autoincrement())
-customer      Customer @relation(fields: [customerId], references: [id])
-customerId    Int @unique
+customerId    Int
 workPeriod    WorkPeriod @relation(fields: [workPeriodId], references: [id])
 workPeriodId  Int
 nbDaysWorked  Int
