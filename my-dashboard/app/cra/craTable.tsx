@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import CustomerComboBox from "./customerComboBox";
 import { DateHeader } from "./dateHeader";
+import CraTableRow from "./craTableRow";
 
 type Props = {
   users: User[];
@@ -72,7 +73,7 @@ export default function CraTable({ users, userId, customers }: Props) {
       </>
     );
   }
-  if (isError) {
+  if (isError || !workPeriod) {
     return "Une erreur est survenue";
   }
 
@@ -104,6 +105,7 @@ export default function CraTable({ users, userId, customers }: Props) {
   };
 
   const closeModal = () => setShowModal(false);
+
   return (
     <>
       <DateHeader
@@ -117,24 +119,15 @@ export default function CraTable({ users, userId, customers }: Props) {
           <TableRow>{columns}</TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell className="border p-2 min-w-[200px] h-12">
-                <CustomerComboBox customers={customers} />
-              </TableCell>
-              {datesOfCurrentMonth.map((date) => (
-                <TableCell
-                  key={date.toDateString()}
-                  onClick={() => handleClickOnCell(date)}
-                  className={clsx("border p-1", {
-                    "bg-gray-500": isWeekEnd(date),
-                    "cursor-pointer": !isWeekEnd(date),
-                  })}
-                >
-                  {}
-                </TableCell>
-              ))}
-            </TableRow>
+          {workPeriod.lines.map((workLine) => (
+            <CraTableRow
+              key={workLine.id}
+              customers={customers}
+              datesOfCurrentMonth={datesOfCurrentMonth}
+              workLine={workLine}
+              month={month}
+              year={year}
+            />
           ))}
         </TableBody>
       </Table>

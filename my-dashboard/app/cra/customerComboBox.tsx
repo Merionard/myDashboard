@@ -16,9 +16,13 @@ import { Customer } from "@prisma/client";
 import { Check } from "lucide-react";
 import { useState } from "react";
 
-export default function CustomerComboBox(props: { customers: Customer[] }) {
+export default function CustomerComboBox(props: {
+  customers: Customer[];
+  customer: Customer;
+  onSelectCustomer: (customer: Customer) => void;
+}) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(props.customer.businessName);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -43,6 +47,7 @@ export default function CustomerComboBox(props: { customers: Customer[] }) {
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : currentValue);
                   setOpen(false);
+                  props.onSelectCustomer(customer);
                 }}
               >
                 <Check
