@@ -1,5 +1,3 @@
-import React from "react";
-import YearSelector from "./yearSelector";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Props = {
@@ -36,6 +34,13 @@ export const DateHeader = ({ month, year, changeMonth, setYear }: Props) => {
     }
   };
 
+  const years = [];
+
+  // Ajouter les 10 années précédentes et les 10 années suivantes à la liste des années
+  for (let i = -10; i <= 10; i++) {
+    years.push(year + i);
+  }
+
   return (
     <div className="flex  justify-center mb-3">
       <div className="flex items-center p-1 gap-2">
@@ -61,13 +66,17 @@ export const DateHeader = ({ month, year, changeMonth, setYear }: Props) => {
           <option value={10}>Novembre</option>
           <option value={11}>Décembre</option>
         </select>
-        <YearSelector
-          year={year}
-          changeYear={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            handleChangeYear(event)
-          }
-          className="form-select"
-        />
+        <select
+          onChange={handleChangeYear}
+          value={year}
+          style={{ width: "130px" }}
+        >
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
         <button onClick={handleNext}>
           <ChevronRight />
         </button>
