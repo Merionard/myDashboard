@@ -28,11 +28,7 @@ export default function CustomerComboBox(props: { customers: Customer[] }) {
           aria-expanded={open}
           className="min-w-[200px] justify-between"
         >
-          {value
-            ? props.customers.find(
-                (customer) => customer.businessName === value
-              )?.businessName
-            : "Selectionnez un client..."}
+          {value ?? "Selectionnez un client..."}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
