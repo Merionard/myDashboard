@@ -13,13 +13,15 @@ export default async function handler(
     let workPeriod = await prisma.workPeriod.findFirst({
       where: {
         userId: String(userId),
-        AND: {
-          month: Number(month),
-          AND: { year: Number(year) },
-        },
+        month: Number(month),
+        year: Number(year),
       },
       include: {
-        lines: true,
+        lines: {
+          include: {
+            workDays: true,
+          },
+        },
       },
     });
     if (!workPeriod) {
@@ -36,7 +38,11 @@ export default async function handler(
           },
         },
         include: {
-          lines: true,
+          lines: {
+            include: {
+              workDays: true,
+            },
+          },
         },
       });
     }

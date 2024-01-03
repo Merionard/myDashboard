@@ -91,6 +91,14 @@ customerId    Int
 workPeriod    WorkPeriod @relation(fields: [workPeriodId], references: [id])
 workPeriodId  Int
 nbDaysWorked  Int
+workDays      WorkDay[]
+}
+
+model WorkDay {
+  id            Int @id @default(autoincrement())
+  date          DateTime @db.Date
+  workPeriodLine WorkPeriodLine @relation(fields: [workPeriodLineId], references: [id])
+  workPeriodLineId Int
 }
 
 model VerificationToken {

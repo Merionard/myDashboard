@@ -25,12 +25,18 @@ type Props = {
 };
 
 export type WorkPeriod = {
-  lines: {
+  lines: ({
+    workDays: {
+      id: number;
+      date: Date;
+      workPeriodLineId: number;
+    }[];
+  } & {
     id: number;
     customerId: number;
     workPeriodId: number;
     nbDaysWorked: number;
-  }[];
+  })[];
 } & {
   id: number;
   month: number;
