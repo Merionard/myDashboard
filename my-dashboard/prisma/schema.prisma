@@ -96,7 +96,7 @@ workDays      WorkDay[]
 
 model WorkDay {
   id            Int @id @default(autoincrement())
-  date          DateTime @db.Date
+  date          DateTime
   workPeriodLine WorkPeriodLine @relation(fields: [workPeriodLineId], references: [id])
   workPeriodLineId Int
 }

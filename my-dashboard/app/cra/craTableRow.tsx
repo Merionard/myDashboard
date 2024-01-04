@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import { client } from "@/src/fetchClient";
 import { useMutation, useQueryClient } from "react-query";
-import { createWorkDay } from "./craAction";
+import { createWorkDay, deleteWorkDay } from "./craAction";
 import { toast } from "sonner";
 
 type Props = {
@@ -41,8 +41,6 @@ export default function CraTableRow({
     return date.getDay() === 6 || date.getDay() === 0;
   };
 
-  console.log(workLine.workDays);
-
   const isDayWorked = (
     date: Date,
     workDays: {
@@ -51,9 +49,9 @@ export default function CraTableRow({
       workPeriodLineId: number;
     }[]
   ) => {
-    return workDays.find(
+    return workDays.some(
       (w) =>
-        w.date.getDay() === date.getDay() &&
+        w.date.getDate() === date.getDate() &&
         w.date.getMonth() === date.getMonth() &&
         w.date.getFullYear() === date.getFullYear()
     );
@@ -78,10 +76,32 @@ export default function CraTableRow({
     workPeriodLineMutation.mutate({ ...workLine, customerId: customer.id });
   };
 
-  const test = async (date: Date, workPeriodLineId: number) => {
-    const workDay = await createWorkDay(date, workPeriodLineId);
-    if (workDay) {
-      toast.success("gg");
+  const addOrRemoveWorkDay = async (date: Date, workPeriodLineId: number) => {
+    console.log(date);
+    if (!isDayWorked(date, workLine.workDays)) {
+      const workDay = await createWorkDay(date, workPeriodLineId);
+      if (workDay) {
+        toast.success("Jour travaillé ajouté avec succès");
+        queryClient.invalidateQueries(["workPeriod", year, month]);
+      } else {
+        toast.error("une erreur est survenue");
+      }
+    } else {
+      const workDayToDelete = workLine.workDays.find(
+        (w) =>
+          w.date.getDate() === date.getDate() &&
+          w.date.getMonth() === date.getMonth() &&
+          w.date.getFullYear() === date.getFullYear()
+      );
+      if (workDayToDelete) {
+        const workDay = await deleteWorkDay(workDayToDelete);
+        if (workDay) {
+          toast.success("Suppression effectuée avec succès!");
+          queryClient.invalidateQueries(["workPeriod", year, month]);
+        } else {
+          toast.error("une erreur est survenue");
+        }
+      }
     }
   };
 
@@ -100,9 +120,9 @@ export default function CraTableRow({
           className={clsx("border p-1", {
             "bg-gray-500": isWeekEnd(date),
             "cursor-pointer": !isWeekEnd(date),
-            "bg-green-500": isDayWorked(date, workLine.workDays),
+            "bg-blue-500": isDayWorked(date, workLine.workDays),
           })}
-          onDoubleClick={() => test(date, workLine.id)}
+          onDoubleClick={() => addOrRemoveWorkDay(date, workLine.id)}
         >
           {}
         </TableCell>
