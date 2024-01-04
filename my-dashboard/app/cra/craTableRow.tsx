@@ -41,6 +41,24 @@ export default function CraTableRow({
     return date.getDay() === 6 || date.getDay() === 0;
   };
 
+  console.log(workLine.workDays);
+
+  const isDayWorked = (
+    date: Date,
+    workDays: {
+      id: number;
+      date: Date;
+      workPeriodLineId: number;
+    }[]
+  ) => {
+    return workDays.find(
+      (w) =>
+        w.date.getDay() === date.getDay() &&
+        w.date.getMonth() === date.getMonth() &&
+        w.date.getFullYear() === date.getFullYear()
+    );
+  };
+
   const queryClient = useQueryClient();
   const workPeriodLineMutation = useMutation({
     mutationFn: (workPeriodLine: WorkPeriodLine) =>
@@ -82,6 +100,7 @@ export default function CraTableRow({
           className={clsx("border p-1", {
             "bg-gray-500": isWeekEnd(date),
             "cursor-pointer": !isWeekEnd(date),
+            "bg-green-500": isDayWorked(date, workLine.workDays),
           })}
           onDoubleClick={() => test(date, workLine.id)}
         >

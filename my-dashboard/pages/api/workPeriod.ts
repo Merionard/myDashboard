@@ -46,7 +46,6 @@ export default async function handler(
         },
       });
     }
-
-    res.status(200).json({ ...workPeriod });
+    res.status(200).json(JSON.stringify(workPeriod));
   }
 }

@@ -1,4 +1,11 @@
 type FetchMethod = "GET" | "POST" | "DELETE";
+function reviveDate(key: string, value: string) {
+  // Matches strings like "2022-08-25T09:39:19.288Z"
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+  return typeof value === "string" && isoDateRegex.test(value)
+    ? new Date(value)
+    : value;
+}
 export const client = async <T>(
   url: string,
   method: FetchMethod,
@@ -24,7 +31,7 @@ export const client = async <T>(
   }
   const result = await response.json();
   if (result && returnType) {
-    return result as T;
+    return JSON.parse(result, reviveDate) as T;
   }
   return null;
 };
