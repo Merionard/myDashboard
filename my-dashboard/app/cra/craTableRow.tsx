@@ -5,6 +5,8 @@ import clsx from "clsx";
 import { useState } from "react";
 import { client } from "@/src/fetchClient";
 import { useMutation, useQueryClient } from "react-query";
+import { createWorkDay } from "./craAction";
+import { toast } from "sonner";
 
 type Props = {
   workLine: {
@@ -58,6 +60,13 @@ export default function CraTableRow({
     workPeriodLineMutation.mutate({ ...workLine, customerId: customer.id });
   };
 
+  const test = async (date: Date, workPeriodLineId: number) => {
+    const workDay = await createWorkDay(date, workPeriodLineId);
+    if (workDay) {
+      toast.success("gg");
+    }
+  };
+
   return (
     <TableRow key={workLine.id}>
       <TableCell className="border p-2 min-w-[200px] h-12">
@@ -74,7 +83,7 @@ export default function CraTableRow({
             "bg-gray-500": isWeekEnd(date),
             "cursor-pointer": !isWeekEnd(date),
           })}
-          onDoubleClick={() => alert(date)}
+          onDoubleClick={() => test(date, workLine.id)}
         >
           {}
         </TableCell>
