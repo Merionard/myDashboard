@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Customer } from "@prisma/client";
-import { Check } from "lucide-react";
+import { Check, Search } from "lucide-react";
 import { useState } from "react";
 
 export default function CustomerComboBox(props: {
@@ -30,9 +30,18 @@ export default function CustomerComboBox(props: {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="min-w-[200px] justify-between"
+          className="min-w-[200px] justify-between max-h-9"
         >
-          {value ?? "Selectionnez un client..."}
+          {(
+            <>
+              <Search />
+              {value}
+            </>
+          ) ?? (
+            <>
+              <Search /> Selectionnez un client...
+            </>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">

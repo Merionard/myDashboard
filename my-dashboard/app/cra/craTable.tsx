@@ -17,6 +17,7 @@ import { useQuery } from "react-query";
 import CustomerComboBox from "./customerComboBox";
 import { DateHeader } from "./dateHeader";
 import CraTableRow from "./craTableRow";
+import { getFirstLetterDayName } from "@/lib/utils";
 
 type Props = {
   users: User[];
@@ -47,7 +48,6 @@ export type WorkPeriod = {
 export default function CraTable({ users, userId, customers }: Props) {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
-  const [showModal, setShowModal] = useState(false);
 
   const {
     data: workPeriod,
@@ -92,28 +92,25 @@ export default function CraTable({ users, userId, customers }: Props) {
     datesOfCurrentMonth.push(date);
   }
 
-  const columns = [];
+  const columnDayNumber = [];
+  const columnsDayName = [];
   for (let i = 1; i <= daysInMonth; i++) {
-    columns.push(
+    columnsDayName.push(
+      <TableHead key={i} className="border">
+        {getFirstLetterDayName(new Date(year, month, i))}
+      </TableHead>
+    );
+    columnDayNumber.push(
       <TableHead className="border" key={i}>
         {i}
       </TableHead>
     );
   }
-  columns.unshift(<th key={0}></th>);
-
-  const handleClickOnCell = async (date: Date) => {
-    setShowModal(true);
-  };
-
-  const isWeekEnd = (date: Date) => {
-    return date.getDay() === 6 || date.getDay() === 0;
-  };
-
-  const closeModal = () => setShowModal(false);
+  columnsDayName.unshift(<TableHead key={0} className="border"></TableHead>);
+  columnDayNumber.unshift(<TableHead key={0} className="border"></TableHead>);
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <DateHeader
         changeMonth={onChangeMonth}
         setYear={setYear}
@@ -122,7 +119,8 @@ export default function CraTable({ users, userId, customers }: Props) {
       />
       <Table>
         <TableHeader>
-          <TableRow>{columns}</TableRow>
+          <TableRow>{columnsDayName}</TableRow>
+          <TableRow>{columnDayNumber}</TableRow>
         </TableHeader>
         <TableBody>
           {workPeriod.lines.map((workLine) => (
@@ -137,6 +135,6 @@ export default function CraTable({ users, userId, customers }: Props) {
           ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 }

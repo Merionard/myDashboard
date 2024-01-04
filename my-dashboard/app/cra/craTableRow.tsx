@@ -7,6 +7,7 @@ import { client } from "@/src/fetchClient";
 import { useMutation, useQueryClient } from "react-query";
 import { createWorkDay, deleteWorkDay } from "./craAction";
 import { toast } from "sonner";
+import { Typography } from "@/components/ui/Typography";
 
 type Props = {
   workLine: {
@@ -64,7 +65,7 @@ export default function CraTableRow({
         "/api/workPeriodLine",
         "POST",
         workPeriodLine,
-        {} as WorkPeriodLine
+        {} as Omit<WorkPeriodLine, "">
       ),
     onSuccess: () => {
       queryClient.invalidateQueries(["workPeriod", year, month]);
@@ -73,11 +74,15 @@ export default function CraTableRow({
 
   const updateSelectedCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
-    workPeriodLineMutation.mutate({ ...workLine, customerId: customer.id });
+    const lineToUpdate = {
+      ...workLine,
+      customerId: customer.id,
+      workDays: undefined,
+    };
+    workPeriodLineMutation.mutate(lineToUpdate);
   };
 
   const addOrRemoveWorkDay = async (date: Date, workPeriodLineId: number) => {
-    console.log(date);
     if (!isDayWorked(date, workLine.workDays)) {
       const workDay = await createWorkDay(date, workPeriodLineId);
       if (workDay) {
@@ -107,12 +112,18 @@ export default function CraTableRow({
 
   return (
     <TableRow key={workLine.id}>
-      <TableCell className="border p-2 min-w-[200px] h-12">
-        <CustomerComboBox
-          customers={customers}
-          customer={selectedCustomer}
-          onSelectCustomer={updateSelectedCustomer}
-        />
+      <TableCell className="border p-3 min-w-[300px] h-12">
+        <div className="flex flex-col gap-2">
+          <CustomerComboBox
+            customers={customers}
+            customer={selectedCustomer}
+            onSelectCustomer={updateSelectedCustomer}
+          />
+          <div className="flex gap-2">
+            <Typography variant={"muted"}>Nb jour travaillés:</Typography>
+            <span className="font-bold">{workLine.workDays.length}</span>
+          </div>
+        </div>
       </TableCell>
       {datesOfCurrentMonth.map((date) => (
         <TableCell

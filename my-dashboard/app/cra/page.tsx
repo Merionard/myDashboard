@@ -9,6 +9,8 @@ export default async function Page() {
   const customers = await prisma.customer.findMany();
 
   return (
-    <CraTable users={users} userId={session.user.id} customers={customers} />
+    <div className="container">
+      <CraTable users={users} userId={session.user.id} customers={customers} />
+    </div>
   );
 }
