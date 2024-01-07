@@ -11,14 +11,16 @@ import {
 import { client } from "@/src/fetchClient";
 import { Customer, User } from "@prisma/client";
 import clsx from "clsx";
-import { Loader2 } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import CustomerComboBox from "./customerComboBox";
 import { DateHeader } from "./dateHeader";
 import CraTableRow from "./craTableRow";
 import { getFirstLetterDayName } from "@/lib/utils";
 import { Decimal } from "@prisma/client/runtime/library";
+import { Button } from "@/components/ui/button";
+import { addLine } from "./craAction";
 
 type Props = {
   users: User[];
@@ -63,6 +65,7 @@ export default function CraTable({ users, userId, customers }: Props) {
       {} as WorkPeriod
     )
   );
+  const queryClient = useQueryClient();
 
   const onChangeMonth = (newMonth: number) => {
     setMonth(newMonth);
@@ -115,6 +118,11 @@ export default function CraTable({ users, userId, customers }: Props) {
   columnsDayName.unshift(<TableHead key={0} className="border"></TableHead>);
   columnDayNumber.unshift(<TableHead key={0} className="border"></TableHead>);
 
+  const handleClickAddLine = async () => {
+    await addLine(workPeriod.id, customers[0].id);
+    queryClient.invalidateQueries(["workPeriod", year, month]);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <DateHeader
@@ -123,6 +131,15 @@ export default function CraTable({ users, userId, customers }: Props) {
         month={month}
         year={year}
       />
+      <div className="flex justify-start">
+        <Button
+          className="flex justify-start gap-2"
+          variant={"outline"}
+          onClick={() => handleClickAddLine()}
+        >
+          <PlusCircle /> Ajouter une ligne
+        </Button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>{columnsDayName}</TableRow>

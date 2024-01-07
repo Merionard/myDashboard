@@ -34,3 +34,21 @@ export const updateWorkDay = async (wordkDay: WorkDay, duration: number) => {
   });
   return workDay;
 };
+
+export const addLine = async (workPeriodId: number, customerId: number) => {
+  const newLine = await prisma.workPeriodLine.create({
+    data: {
+      workPeriodId: workPeriodId,
+      customerId: customerId,
+      nbDaysWorked: 0,
+    },
+  });
+  return newLine;
+};
+
+export const deleteLine = async (lineId: number) => {
+  const deletedLine = await prisma.workPeriodLine.delete({
+    where: { id: lineId },
+  });
+  return deletedLine;
+};

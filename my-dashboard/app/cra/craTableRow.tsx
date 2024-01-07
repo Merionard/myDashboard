@@ -5,7 +5,12 @@ import clsx from "clsx";
 import { useRef, useState } from "react";
 import { client } from "@/src/fetchClient";
 import { useMutation, useQueryClient } from "react-query";
-import { createWorkDay, deleteWorkDay, updateWorkDay } from "./craAction";
+import {
+  createWorkDay,
+  deleteLine,
+  deleteWorkDay,
+  updateWorkDay,
+} from "./craAction";
 import { toast } from "sonner";
 import { Typography } from "@/components/ui/Typography";
 import { Input } from "@/components/ui/input";
@@ -20,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 type Props = {
   workLine: {
@@ -162,6 +169,16 @@ export default function CraTableRow({
       .reduce((a, b) => a + Number(b), 0);
   };
 
+  const HandleClickDeleteLine = async () => {
+    const deletedLine = await deleteLine(workLine.id);
+    if (deletedLine) {
+      toast.success("ligne supprimée avec succès!");
+      queryClient.invalidateQueries(["workPeriod", year, month]);
+    } else {
+      toast.error("une erreur est survenue");
+    }
+  };
+
   return (
     <TableRow key={workLine.id}>
       <TableCell className="border p-3 min-w-[300px] h-12">
@@ -171,9 +188,18 @@ export default function CraTableRow({
             customer={selectedCustomer}
             onSelectCustomer={updateSelectedCustomer}
           />
-          <div className="flex gap-2">
-            <Typography variant={"muted"}>Nb jour travaillés:</Typography>
-            <span className="font-bold">{getTotalDuration()}</span>
+          <div className="flex justify-between items-baseline">
+            <div className="flex gap-2 items-center">
+              <Typography variant={"muted"}>Nb jour travaillés:</Typography>
+              <span className="font-bold">{getTotalDuration()}</span>
+            </div>
+            <Button
+              variant={"destructive"}
+              onClick={HandleClickDeleteLine}
+              size={"sm"}
+            >
+              <Trash2 size={20} />
+            </Button>
           </div>
         </div>
       </TableCell>

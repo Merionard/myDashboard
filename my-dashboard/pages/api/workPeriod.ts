@@ -1,5 +1,4 @@
 import { prisma } from "@/prisma/client";
-import { WorkPeriod } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
