@@ -18,6 +18,7 @@ import CustomerComboBox from "./customerComboBox";
 import { DateHeader } from "./dateHeader";
 import CraTableRow from "./craTableRow";
 import { getFirstLetterDayName } from "@/lib/utils";
+import { Decimal } from "@prisma/client/runtime/library";
 
 type Props = {
   users: User[];
@@ -31,6 +32,7 @@ export type WorkPeriod = {
       id: number;
       date: Date;
       workPeriodLineId: number;
+      duration: Decimal;
     }[];
   } & {
     id: number;
@@ -96,12 +98,16 @@ export default function CraTable({ users, userId, customers }: Props) {
   const columnsDayName = [];
   for (let i = 1; i <= daysInMonth; i++) {
     columnsDayName.push(
-      <TableHead key={i} className="border">
+      <TableHead
+        key={i}
+        className="border text-center"
+        style={{ minWidth: "60px" }}
+      >
         {getFirstLetterDayName(new Date(year, month, i))}
       </TableHead>
     );
     columnDayNumber.push(
-      <TableHead className="border" key={i}>
+      <TableHead className="border text-center" key={i}>
         {i}
       </TableHead>
     );

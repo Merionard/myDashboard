@@ -99,6 +99,7 @@ model WorkDay {
   date          DateTime
   workPeriodLine WorkPeriodLine @relation(fields: [workPeriodLineId], references: [id])
   workPeriodLineId Int
+  duration      Float @default(0)
 }
 
 model VerificationToken {

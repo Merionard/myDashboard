@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "WorkDay" ADD COLUMN     "duration" DECIMAL(65,30) NOT NULL DEFAULT 0;
