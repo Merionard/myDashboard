@@ -1,26 +1,23 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getFirstLetterDayName, isDateEqual } from "@/lib/utils";
 import { client } from "@/src/fetchClient";
 import { Customer, User } from "@prisma/client";
-import clsx from "clsx";
+import { Decimal } from "@prisma/client/runtime/library";
 import { Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import CustomerComboBox from "./customerComboBox";
-import { DateHeader } from "./dateHeader";
-import CraTableRow from "./craTableRow";
-import { getFirstLetterDayName } from "@/lib/utils";
-import { Decimal } from "@prisma/client/runtime/library";
-import { Button } from "@/components/ui/button";
 import { addLine } from "./craAction";
+import CraTableRow from "./craTableRow";
+import { DateHeader } from "./dateHeader";
 
 type Props = {
   users: User[];
@@ -49,6 +46,20 @@ export type WorkPeriod = {
   userId: string;
 };
 
+export const fetchHolidays = async (year: number) => {
+  const url = `https://calendrier.api.gouv.fr/jours-feries/metropole/${year}.json`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("error when calling api-gouv for holidays!");
+  }
+  const json = await response.json();
+  const arrayHolidays: Array<Date> = [];
+  for (const [key, _] of Object.entries(json)) {
+    arrayHolidays.push(new Date(key));
+  }
+  return arrayHolidays;
+};
+
 export default function CraTable({ users, userId, customers }: Props) {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
@@ -65,13 +76,19 @@ export default function CraTable({ users, userId, customers }: Props) {
       {} as WorkPeriod
     )
   );
+  const {
+    data: holidays,
+    isError: isErrorOnHolidays,
+    isLoading: isLoadingHolidays,
+  } = useQuery(["holidays", year, month], () => fetchHolidays(year));
+  console.log(holidays);
   const queryClient = useQueryClient();
 
   const onChangeMonth = (newMonth: number) => {
     setMonth(newMonth);
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingHolidays) {
     return (
       <>
         <DateHeader
@@ -84,16 +101,28 @@ export default function CraTable({ users, userId, customers }: Props) {
       </>
     );
   }
+
   if (isError || !workPeriod) {
     return "Une erreur est survenue";
+  }
+  if (isErrorOnHolidays || !holidays) {
+    return "Une erreur est survenue lors de la récupération des jours fériés";
   }
 
   const currentDate = new Date(year, month + 1, 0);
   const daysInMonth = currentDate.getDate();
+  let nbBusinessDays = 0;
 
   const datesOfCurrentMonth: Array<Date> = [];
   for (let i = 1; i <= daysInMonth; i++) {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+    if (
+      date.getDay() !== 6 &&
+      date.getDay() !== 0 &&
+      !holidays?.some((h) => isDateEqual(h, date))
+    ) {
+      nbBusinessDays++;
+    }
     datesOfCurrentMonth.push(date);
   }
 
@@ -115,7 +144,11 @@ export default function CraTable({ users, userId, customers }: Props) {
       </TableHead>
     );
   }
-  columnsDayName.unshift(<TableHead key={0} className="border"></TableHead>);
+  columnsDayName.unshift(
+    <TableHead key={0} className="border">
+      TOTAL JOURS OUVRABLES: {nbBusinessDays}
+    </TableHead>
+  );
   columnDayNumber.unshift(<TableHead key={0} className="border"></TableHead>);
 
   const handleClickAddLine = async () => {
@@ -154,6 +187,7 @@ export default function CraTable({ users, userId, customers }: Props) {
               workLine={workLine}
               month={month}
               year={year}
+              holidays={holidays}
             />
           ))}
         </TableBody>

@@ -1,21 +1,5 @@
-import { TableCell, TableRow } from "@/components/ui/table";
-import CustomerComboBox from "./customerComboBox";
-import { Customer, WorkPeriodLine } from "@prisma/client";
-import clsx from "clsx";
-import { useRef, useState } from "react";
-import { client } from "@/src/fetchClient";
-import { useMutation, useQueryClient } from "react-query";
-import {
-  createWorkDay,
-  deleteLine,
-  deleteWorkDay,
-  updateWorkDay,
-} from "./craAction";
-import { toast } from "sonner";
 import { Typography } from "@/components/ui/Typography";
-import { Input } from "@/components/ui/input";
-import { isDateEqual } from "@/lib/utils";
-import { Decimal } from "@prisma/client/runtime/library";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -25,8 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { isDateEqual } from "@/lib/utils";
+import { client } from "@/src/fetchClient";
+import { Customer, WorkPeriodLine } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
+import clsx from "clsx";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { toast } from "sonner";
+import {
+  createWorkDay,
+  deleteLine,
+  deleteWorkDay,
+  updateWorkDay,
+} from "./craAction";
+import CustomerComboBox from "./customerComboBox";
 
 type Props = {
   workLine: {
@@ -46,6 +45,7 @@ type Props = {
   datesOfCurrentMonth: Array<Date>;
   year: number;
   month: number;
+  holidays: Date[];
 };
 
 export default function CraTableRow({
@@ -54,13 +54,18 @@ export default function CraTableRow({
   workLine,
   year,
   month,
+  holidays,
 }: Props) {
   const [selectedCustomer, setSelectedCustomer] = useState(
     customers.find((c) => c.id === workLine.customerId) ?? customers[0]
   );
 
   const isWeekEnd = (date: Date) => {
-    return date.getDay() === 6 || date.getDay() === 0;
+    return (
+      date.getDay() === 6 ||
+      date.getDay() === 0 ||
+      holidays.some((h) => isDateEqual(h, date))
+    );
   };
 
   const isDayWorked = (
@@ -159,7 +164,6 @@ export default function CraTableRow({
 
   const getWorkDayDuration = (date: Date) => {
     const workDay = workLine.workDays.find((w) => isDateEqual(date, w.date));
-    console.log(workDay?.duration.toString() ?? "0");
     return workDay?.duration.toString() ?? "0";
   };
 
