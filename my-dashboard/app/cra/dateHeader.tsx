@@ -1,3 +1,12 @@
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Props = {
@@ -8,12 +17,12 @@ type Props = {
 };
 
 export const DateHeader = ({ month, year, changeMonth, setYear }: Props) => {
-  const handleChangeMonth = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    changeMonth(parseInt(event.target.value, 10));
+  const handleChangeMonth = (month: string) => {
+    changeMonth(parseInt(month, 10));
   };
 
-  const handleChangeYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setYear(parseInt(event.target.value, 10));
+  const handleChangeYear = (selectedYear: string) => {
+    setYear(parseInt(selectedYear, 10));
   };
 
   const handlePrev = () => {
@@ -47,36 +56,40 @@ export const DateHeader = ({ month, year, changeMonth, setYear }: Props) => {
         <button onClick={handlePrev}>
           <ChevronLeft />
         </button>
-        <select
-          className="form-select"
-          style={{ width: "130px" }}
-          value={month}
-          onChange={handleChangeMonth}
-        >
-          <option value={0}>Janvier</option>
-          <option value={1}>Février</option>
-          <option value={2}>Mars</option>
-          <option value={3}>Avril</option>
-          <option value={4}>Mai</option>
-          <option value={5}>Juin</option>
-          <option value={6}>Juillet</option>
-          <option value={7}>Août</option>
-          <option value={8}>Septembre</option>
-          <option value={9}>Octobre</option>
-          <option value={10}>Novembre</option>
-          <option value={11}>Décembre</option>
-        </select>
-        <select
-          onChange={handleChangeYear}
-          value={year}
-          style={{ width: "130px" }}
-        >
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+        <Select value={month.toString()} onValueChange={handleChangeMonth}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Durée</SelectLabel>
+              <SelectItem value={"0"}>Janvier</SelectItem>
+              <SelectItem value={"1"}>Février</SelectItem>
+              <SelectItem value={"2"}>Mars</SelectItem>
+              <SelectItem value={"3"}>Avril</SelectItem>
+              <SelectItem value={"4"}>Mai</SelectItem>
+              <SelectItem value={"5"}>Juin</SelectItem>
+              <SelectItem value={"6"}>Juillet</SelectItem>
+              <SelectItem value={"7"}>Août</SelectItem>
+              <SelectItem value={"8"}>Septembre</SelectItem>
+              <SelectItem value={"9"}>Octobre</SelectItem>
+              <SelectItem value={"10"}>Novembre</SelectItem>
+              <SelectItem value={"11"}>Décembre</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select onValueChange={handleChangeYear} value={year.toString()}>
+          <SelectTrigger style={{ width: "130px" }}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {years.map((year) => (
+              <SelectItem key={year} value={year.toString()}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <button onClick={handleNext}>
           <ChevronRight />
         </button>
