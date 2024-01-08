@@ -14,6 +14,7 @@ import TextField from "@mui/material/TextField";
 import { InvoiceLine } from "../invoiceSchema";
 import { ChangeEvent } from "react";
 import { MenuItem } from "@mui/material";
+import { NumericFormatCustom } from "@/components/ui/numericFormatInput";
 
 type Props = {
   line: InvoiceLine;
@@ -59,11 +60,10 @@ export const InvoiceLineForm = ({ line, onChangeLineCallBack }: Props) => {
             label="Prix HT"
             variant="standard"
             style={{ flex: "1 0 0" }}
-            type="number"
             onChange={(e) => onChangeLineCallBack(e, line.ihmId)}
             value={line.unitPrice}
-            inputProps={{ style: { textAlign: "right" } }}
             InputProps={{
+              inputComponent: NumericFormatCustom as any,
               style: { textAlign: "right" },
             }}
           />
@@ -88,7 +88,7 @@ export const InvoiceLineForm = ({ line, onChangeLineCallBack }: Props) => {
             label="Total HT"
             variant="standard"
             style={{ flex: "1 0 0" }}
-            value={`${line.totalHT} €`}
+            value={`${line.totalHT.toFixed(2)} €`}
             inputProps={{ style: { textAlign: "right" } }}
             InputProps={{
               style: { textAlign: "right" },
