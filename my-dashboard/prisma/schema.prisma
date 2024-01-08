@@ -110,7 +110,55 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Invoice {
+  id            Int @id @default(autoincrement())
+  number        String @unique
+  type          InvoiceType
+  statut        InvoiceStatus
+  customerName  String
+  customerSociety String?
+  customerSiren  String?
+  customerVatNumber String?
+  customerAddress String
+  customerCountry String
+  customerMail    String?
+  conditionReglement  String
+  modeReglement   String
+  createdAt     DateTime
+  validateAt    DateTime?
+  payedAt       DateTime?
+  lines       InvoiceLine[]
+  totalHT     Float
+  totalTTC    Float
 
+}
+
+model InvoiceLine {
+  id            Int @id @default(autoincrement())
+  invoice       Invoice @relation(fields: [invoiceId], references: [id],onDelete:Cascade, onUpdate: Cascade)
+  invoiceId     Int
+  type          String
+  unitPrice     Float
+  quantity      Int
+  vatRate       Int
+  totalHT         Float
+  totalTTC      Float
+  VatAmount     Float
+
+}
+
+enum InvoiceStatus {
+  DRAFT
+  CANCELED
+  VALIDATED
+  PAYED
+}
+
+
+enum InvoiceType {
+  INVOICE
+  CREDIT_NOTE
+}
 
 enum Role {
   USER
