@@ -11,6 +11,7 @@ export function CustomTextField(
   return (
     <TextField
       {...props}
+      margin="dense"
       sx={{
         "& label.Mui-focused": {
           color: "#787bff",

@@ -29,3 +29,5 @@ export const InvoiceStatus = [
   "VALIDATED",
   "PAYED",
 ] as const;
+
+export const VatRates = [20, 10, 5.5, 2.1];

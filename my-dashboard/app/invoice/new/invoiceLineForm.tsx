@@ -9,10 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ServiceTypes } from "@/src/enums";
+import { ServiceTypes, VatRates } from "@/src/enums";
 import TextField from "@mui/material/TextField";
 import { InvoiceLine } from "../invoiceSchema";
 import { ChangeEvent } from "react";
+import { MenuItem } from "@mui/material";
 
 type Props = {
   line: InvoiceLine;
@@ -44,37 +45,65 @@ export const InvoiceLineForm = ({ line, onChangeLineCallBack }: Props) => {
             name="quantity"
             label="Quantité"
             variant="standard"
+            style={{ flex: "1 0 0" }}
             type="number"
             onChange={(e) => onChangeLineCallBack(e, line.ihmId)}
             value={line.quantity}
+            inputProps={{ style: { textAlign: "right" } }}
+            InputProps={{
+              style: { textAlign: "right" },
+            }}
           />
           <CustomTextField
             name="unitPrice"
             label="Prix HT"
             variant="standard"
+            style={{ flex: "1 0 0" }}
             type="number"
-            onChange={(e) => alert(e.target)}
+            onChange={(e) => onChangeLineCallBack(e, line.ihmId)}
+            value={line.unitPrice}
+            inputProps={{ style: { textAlign: "right" } }}
+            InputProps={{
+              style: { textAlign: "right" },
+            }}
           />
           <CustomTextField
-            name="vatRate"
-            label="Taux tva"
+            label="Taux TVA"
+            select
             variant="standard"
-            type="number"
-            onChange={(e) => alert(e.target)}
-          />
+            style={{ flex: "1 0 0" }}
+            value={line.vatRate}
+            name={"vatRate"}
+            onChange={(e) => onChangeLineCallBack(e, line.ihmId)}
+          >
+            {VatRates.map((rate) => (
+              <MenuItem key={rate} value={rate}>
+                {rate}%
+              </MenuItem>
+            ))}
+          </CustomTextField>
+
           <CustomTextField
             name="totalHT"
             label="Total HT"
             variant="standard"
-            type="number"
-            onChange={(e) => alert(e.target)}
+            style={{ flex: "1 0 0" }}
+            value={`${line.totalHT} €`}
+            inputProps={{ style: { textAlign: "right" } }}
+            InputProps={{
+              style: { textAlign: "right" },
+            }}
           />
           <CustomTextField
             name="totalTTC"
             label="Total TTC"
             variant="standard"
-            type="number"
-            onChange={(e) => alert(e.target)}
+            style={{ flex: "1 0 0" }}
+            inputProps={{ style: { textAlign: "right" } }}
+            InputProps={{
+              style: { textAlign: "right" },
+            }}
+            value={`${line.totalTTC} €`}
           />
         </div>
       </Select>

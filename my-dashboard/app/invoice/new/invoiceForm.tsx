@@ -53,20 +53,32 @@ export const InvoiceForm = ({ customers }: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ihmId: string
   ) => {
-    const lines = [...invoice.lines];
-    const lineToUpdate = lines.find((i) => i.ihmId === ihmId);
-    if (lineToUpdate) {
-      const newLine = {
-        ...lineToUpdate,
-        [e.target.name]: Number(e.target.value),
-      };
-      lines.splice(
-        lines.findIndex((l) => l.ihmId === ihmId),
-        1,
-        newLine
-      );
-      setInvoice((prev) => ({ ...prev, lines: lines }));
-    }
+    setInvoice((prev) => {
+      const updatedLines = prev.lines.map((line) => {
+        if (line.ihmId === ihmId) {
+          const updatedLine = {
+            ...line,
+            [e.target.name]: Number(e.target.value),
+          };
+          return {
+            ...updatedLine,
+            totalHT: Number(
+              (updatedLine.quantity * updatedLine.unitPrice).toFixed(2)
+            ),
+            totalTTC: Number(
+              (
+                updatedLine.quantity *
+                updatedLine.unitPrice *
+                (1 + updatedLine.vatRate / 100)
+              ).toFixed(2)
+            ),
+          };
+        }
+        return line;
+      });
+
+      return { ...prev, lines: updatedLines };
+    });
   };
 
   return (
