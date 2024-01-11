@@ -31,8 +31,7 @@ export default function SelectCustomer({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   return (
-    <>
-      {" "}
+    <div>
       <Typography variant={"h3"}>Destinataire</Typography>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -98,6 +97,6 @@ export default function SelectCustomer({
           <p className="h-6 min-h-6">{selectedCustomer?.contact?.email}</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

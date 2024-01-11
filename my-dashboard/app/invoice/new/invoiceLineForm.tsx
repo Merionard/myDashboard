@@ -44,7 +44,7 @@ export const InvoiceLineForm = ({
   onSelectType,
 }: Props) => {
   return (
-    <div className="flex flex-col gap-2 border-l p-4">
+    <div className="flex flex-col gap-2 border-l p-4 mb-2">
       <div className="flex justify-between">
         <Select
           onValueChange={(
@@ -90,7 +90,7 @@ export const InvoiceLineForm = ({
           </TooltipProvider>
         </div>
       </div>
-      <div className="flex gap-3 w-4/5">
+      <div className="flex gap-3">
         <CustomTextField
           name="quantity"
           label="Quantité"

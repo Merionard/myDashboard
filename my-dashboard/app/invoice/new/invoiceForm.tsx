@@ -9,6 +9,17 @@ import { CustomerWithAddressAndContact } from "../page";
 import { InvoiceLineForm } from "./invoiceLineForm";
 import SelectCustomer from "./selectCustomer";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+} from "@/components/ui/table";
+import { TableRow } from "@mui/material";
+import Conditions from "./conditionsReglement";
+import Total from "./total";
+import Link from "next/link";
 
 type Props = {
   customers: CustomerWithAddressAndContact[];
@@ -67,6 +78,14 @@ export const InvoiceForm = ({ customers }: Props) => {
                 (1 + updatedLine.vatRate / 100)
               ).toFixed(2)
             ),
+            VatAmount: Number(
+              (
+                (updatedLine.quantity *
+                  updatedLine.unitPrice *
+                  updatedLine.vatRate) /
+                100
+              ).toFixed(2)
+            ),
           };
         }
         return line;
@@ -113,6 +132,42 @@ export const InvoiceForm = ({ customers }: Props) => {
     setInvoice((prev) => ({ ...prev, lines: updatedLines }));
   };
 
+  const linesGroupByTaxRate: Array<{ vatRate: number; total: number }> = [];
+  invoice.lines
+    .filter((l) => l.vatRate > 0)
+    .forEach((line) => {
+      const groupLineIndex = linesGroupByTaxRate.findIndex(
+        (groupLine) => groupLine.vatRate === line.vatRate
+      );
+      if (groupLineIndex === -1) {
+        linesGroupByTaxRate.push({
+          vatRate: line.vatRate,
+          total: line.VatAmount,
+        });
+      } else {
+        const updateGroupLine = {
+          ...linesGroupByTaxRate[groupLineIndex],
+          total: linesGroupByTaxRate[groupLineIndex].total + line.VatAmount,
+        };
+        linesGroupByTaxRate.splice(groupLineIndex, 1, updateGroupLine);
+      }
+    });
+
+  const total = invoice.lines
+    .map((l) => ({
+      totalHT: l.totalHT,
+      totalTTC: l.totalTTC,
+      totalVAT: l.VatAmount,
+    }))
+    .reduce(
+      (t1, t2) => ({
+        totalHT: t1.totalHT + t2.totalHT,
+        totalTTC: t1.totalTTC + t2.totalTTC,
+        totalVAT: t1.totalVAT + t2.totalVAT,
+      }),
+      { totalHT: 0, totalTTC: 0, totalVAT: 0 }
+    );
+
   const addLine = () => {
     const newLine: InvoiceLine = {
       quantity: 0,
@@ -134,13 +189,12 @@ export const InvoiceForm = ({ customers }: Props) => {
           <CardTitle>Nouvelle Facture</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="w-1/2">
-            <SelectCustomer
-              customers={customers}
-              selectedCustomer={selectedCustomer}
-              onSelectCustomer={setSelectedCustomer}
-            />
-          </div>
+          <SelectCustomer
+            customers={customers}
+            selectedCustomer={selectedCustomer}
+            onSelectCustomer={setSelectedCustomer}
+          />
+
           <Typography variant={"h3"} className="mt-3">
             Articles
           </Typography>
@@ -157,6 +211,54 @@ export const InvoiceForm = ({ customers }: Props) => {
           <Button onClick={addLine} className="mt-2">
             Ajouter une ligne
           </Button>
+
+          <Table className="w-1/4 mt-5">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="border text-center">
+                  TAUX DE TAXE
+                </TableHead>
+                <TableHead className="border text-center">
+                  TAXE TOTALE
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {linesGroupByTaxRate.map((l) => (
+                <TableRow key={l.vatRate}>
+                  <TableCell className="text-right border">
+                    {l.vatRate}%
+                  </TableCell>
+                  <TableCell className="text-right border">
+                    {l.total} €
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div className="flex justify-between items-end mt-3">
+            <Conditions
+              invoice={invoice}
+              updateInvoiceConditionReg={(val) =>
+                setInvoice((prev) => ({ ...prev, conditionReglement: val }))
+              }
+              updateInvoiceModeReg={(val) =>
+                setInvoice((prev) => ({ ...prev, modeReglement: val }))
+              }
+            />
+            <Total
+              totalHT={total.totalHT}
+              totalTTC={total.totalTTC}
+              totalVAT={total.totalVAT}
+            />
+          </div>
+          <div className="flex justify-between mt-3">
+            <Link href={"/"}>
+              <Button variant={"destructive"}>Annuler</Button>
+            </Link>
+            <Button>Enregistrer</Button>
+          </div>
         </CardContent>
       </Card>
     </div>
