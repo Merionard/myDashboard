@@ -147,6 +147,11 @@ model InvoiceLine {
 
 }
 
+model Compteur {
+  type  InvoiceType @id
+  count Int
+}
+
 enum InvoiceStatus {
   DRAFT
   CANCELED

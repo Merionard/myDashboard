@@ -1,14 +1,8 @@
 "use client";
 
 import { Typography } from "@/components/ui/Typography";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { ChangeEvent, useState } from "react";
-import { Invoice, InvoiceLine } from "../invoiceSchema";
-import { CustomerWithAddressAndContact } from "../page";
-import { InvoiceLineForm } from "./invoiceLineForm";
-import SelectCustomer from "./selectCustomer";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -17,9 +11,16 @@ import {
   TableHeader,
 } from "@/components/ui/table";
 import { TableRow } from "@mui/material";
-import Conditions from "./conditionsReglement";
-import Total from "./total";
 import Link from "next/link";
+import { ChangeEvent, useState } from "react";
+import { Invoice, InvoiceLine } from "../invoiceSchema";
+import { CustomerWithAddressAndContact } from "../page";
+import Conditions from "./conditionsReglement";
+import { InvoiceLineForm } from "./invoiceLineForm";
+import SelectCustomer from "./selectCustomer";
+import Total from "./total";
+import { createInvoice } from "../invoiceAction";
+import { toast } from "sonner";
 
 type Props = {
   customers: CustomerWithAddressAndContact[];
@@ -54,6 +55,27 @@ export const InvoiceForm = ({ customers }: Props) => {
   const [invoice, setInvoice] = useState<Invoice>(() => initInvoice());
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerWithAddressAndContact | null>(null);
+
+  const onSelectCustomer = (customer: CustomerWithAddressAndContact) => {
+    setSelectedCustomer(customer);
+    setInvoice((prev) => {
+      const updatedInvoice = { ...prev };
+      if (customer.address.length > 0) {
+        updatedInvoice.customerAddress = customer.address[0].addressName;
+        updatedInvoice.customerCountry = customer.address[0].country;
+      }
+      updatedInvoice.customerName = customer.businessName;
+      updatedInvoice.customerSociety = customer.businessName;
+      if (customer.siren) {
+        updatedInvoice.customerSiren = customer.siren;
+      }
+
+      if (customer.contact) {
+        updatedInvoice.customerMail = customer.contact.email;
+      }
+      return updatedInvoice;
+    });
+  };
 
   const onChangeLine = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -182,6 +204,15 @@ export const InvoiceForm = ({ customers }: Props) => {
     setInvoice((prev) => ({ ...prev, lines: [...prev.lines, newLine] }));
   };
 
+  const saveNewInvoice = async () => {
+    const { data, serverError, validationError } = await createInvoice(invoice);
+    if (data) {
+      toast.success("facture " + data.number + " créée avec succès");
+    } else {
+      toast.error("oups");
+    }
+  };
+
   return (
     <div className="container">
       <Card>
@@ -192,7 +223,7 @@ export const InvoiceForm = ({ customers }: Props) => {
           <SelectCustomer
             customers={customers}
             selectedCustomer={selectedCustomer}
-            onSelectCustomer={setSelectedCustomer}
+            onSelectCustomer={onSelectCustomer}
           />
 
           <Typography variant={"h3"} className="mt-3">
@@ -257,7 +288,7 @@ export const InvoiceForm = ({ customers }: Props) => {
             <Link href={"/"}>
               <Button variant={"destructive"}>Annuler</Button>
             </Link>
-            <Button>Enregistrer</Button>
+            <Button onClick={saveNewInvoice}>Enregistrer</Button>
           </div>
         </CardContent>
       </Card>
