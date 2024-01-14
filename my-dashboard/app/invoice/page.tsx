@@ -1,19 +1,18 @@
+import { DataTable } from "@/components/dataTable";
 import { prisma } from "@/prisma/client";
-import { InvoiceForm } from "./new/invoiceForm";
-import { Prisma } from "@prisma/client";
+import { columnsInvoice } from "./columnsDatatableInvoice";
 
-export type CustomerWithAddressAndContact = Prisma.CustomerGetPayload<{
-  include: { contact: true; address: true };
-}>;
-
-export default async function InvoicePage() {
-  const customers = await prisma.customer.findMany({
-    include: { contact: true, address: true },
-  });
+export default async function InvoiceDatatalbe() {
+  const invoices = await prisma.invoice.findMany();
 
   return (
-    <div>
-      <InvoiceForm customers={customers} />
+    <div className="container mx-auto py-10">
+      <DataTable
+        columns={columnsInvoice}
+        data={invoices}
+        filter="number"
+        filterName="Numéro de facture"
+      />
     </div>
   );
 }

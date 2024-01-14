@@ -14,7 +14,7 @@ import { TableRow } from "@mui/material";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import { Invoice, InvoiceLine } from "../invoiceSchema";
-import { CustomerWithAddressAndContact } from "../page";
+import { CustomerWithAddressAndContact } from "./page";
 import Conditions from "./conditionsReglement";
 import { InvoiceLineForm } from "./invoiceLineForm";
 import SelectCustomer from "./selectCustomer";

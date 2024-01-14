@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
-import { CustomerWithAddressAndContact } from "../page";
+import { CustomerWithAddressAndContact } from "./page";
 import { cn } from "@/lib/utils";
 
 type Props = {
