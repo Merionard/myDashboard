@@ -46,3 +46,8 @@ export const createInvoice = authenticatedAction(
     return newInvoice;
   }
 );
+
+export const deleteInvoice = async (invoiceId: number) => {
+  const deletedInvoice = prisma.invoice.delete({ where: { id: invoiceId } });
+  return deleteInvoice;
+};
