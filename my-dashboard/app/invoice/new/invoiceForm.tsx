@@ -13,7 +13,7 @@ import {
 import { TableRow } from "@mui/material";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
-import { Invoice, InvoiceLine } from "../invoiceSchema";
+import { Invoice, InvoiceLine, InvoiceSchema } from "../invoiceSchema";
 import { CustomerWithAddressAndContact } from "./page";
 import Conditions from "./conditionsReglement";
 import { InvoiceLineForm } from "./invoiceLineForm";
@@ -21,6 +21,10 @@ import SelectCustomer from "./selectCustomer";
 import Total from "./total";
 import { createInvoice } from "../invoiceAction";
 import { toast } from "sonner";
+import { z } from "zod";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   customers: CustomerWithAddressAndContact[];
@@ -55,6 +59,9 @@ export const InvoiceForm = ({ customers }: Props) => {
   const [invoice, setInvoice] = useState<Invoice>(() => initInvoice());
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerWithAddressAndContact | null>(null);
+  const [validationMsg, setValidationMsg] = useState<null | string>(null);
+
+  const router = useRouter();
 
   const onSelectCustomer = (customer: CustomerWithAddressAndContact) => {
     setSelectedCustomer(customer);
@@ -112,8 +119,14 @@ export const InvoiceForm = ({ customers }: Props) => {
         }
         return line;
       });
+      const total = calculateTotal(updatedLines);
 
-      return { ...prev, lines: updatedLines };
+      return {
+        ...prev,
+        totalTTC: total.totalTTC,
+        totalHT: total.totalHT,
+        lines: updatedLines,
+      };
     });
   };
 
@@ -175,20 +188,24 @@ export const InvoiceForm = ({ customers }: Props) => {
       }
     });
 
-  const total = invoice.lines
-    .map((l) => ({
-      totalHT: l.totalHT,
-      totalTTC: l.totalTTC,
-      totalVAT: l.VatAmount,
-    }))
-    .reduce(
-      (t1, t2) => ({
-        totalHT: t1.totalHT + t2.totalHT,
-        totalTTC: t1.totalTTC + t2.totalTTC,
-        totalVAT: t1.totalVAT + t2.totalVAT,
-      }),
-      { totalHT: 0, totalTTC: 0, totalVAT: 0 }
-    );
+  const calculateTotal = (invoicesLines: InvoiceLine[]) => {
+    return invoicesLines
+      .map((l) => ({
+        totalHT: l.totalHT,
+        totalTTC: l.totalTTC,
+        totalVAT: l.VatAmount,
+      }))
+      .reduce(
+        (t1, t2) => ({
+          totalHT: t1.totalHT + t2.totalHT,
+          totalTTC: t1.totalTTC + t2.totalTTC,
+          totalVAT: t1.totalVAT + t2.totalVAT,
+        }),
+        { totalHT: 0, totalTTC: 0, totalVAT: 0 }
+      );
+  };
+
+  const total = calculateTotal(invoice.lines);
 
   const addLine = () => {
     const newLine: InvoiceLine = {
@@ -205,12 +222,33 @@ export const InvoiceForm = ({ customers }: Props) => {
   };
 
   const saveNewInvoice = async () => {
+    const { success, msg } = validateInvoice();
+    if (!success) {
+      setValidationMsg(msg);
+      return;
+    }
+    setValidationMsg(null);
     const { data, serverError, validationError } = await createInvoice(invoice);
     if (data) {
+      router.push("/invoice");
+      router.refresh();
       toast.success("facture " + data.number + " créée avec succès");
     } else {
-      toast.error("oups");
+      toast.error(serverError);
     }
+  };
+
+  const validateInvoice = () => {
+    if (!selectedCustomer) {
+      return { success: false, msg: "Vous devez sélectionner un client!" };
+    }
+    if (invoice.totalTTC === 0) {
+      return {
+        success: false,
+        msg: "Vous ne pouvez enregistrer une facture avec un montant nul",
+      };
+    }
+    return { success: true, msg: null };
   };
 
   return (
@@ -220,6 +258,14 @@ export const InvoiceForm = ({ customers }: Props) => {
           <CardTitle>Nouvelle Facture</CardTitle>
         </CardHeader>
         <CardContent>
+          {validationMsg && (
+            <Alert variant={"destructive"}>
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Erreurs de validation</AlertTitle>
+              <AlertDescription>{validationMsg}</AlertDescription>
+            </Alert>
+          )}
+
           <SelectCustomer
             customers={customers}
             selectedCustomer={selectedCustomer}
@@ -285,7 +331,7 @@ export const InvoiceForm = ({ customers }: Props) => {
             />
           </div>
           <div className="flex justify-between mt-3">
-            <Link href={"/"}>
+            <Link href={"/invoice"}>
               <Button variant={"destructive"}>Annuler</Button>
             </Link>
             <Button onClick={saveNewInvoice}>Enregistrer</Button>

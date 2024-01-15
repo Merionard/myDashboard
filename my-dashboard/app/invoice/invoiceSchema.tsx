@@ -23,7 +23,7 @@ export const InvoiceSchema = z.object({
   id: z.number().optional(),
   type: z.enum(InvoiceType),
   statut: z.enum(InvoiceStatus),
-  customerName: z.string(),
+  customerName: z.string().min(1),
   customerSociety: z.string().optional(),
   customerSiren: z.string().optional(),
   customerVatNumber: z.string().optional(),

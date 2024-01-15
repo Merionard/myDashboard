@@ -2,51 +2,45 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Typography } from "../ui/Typography";
+import { cn } from "@/lib/utils";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 export const Navbar = () => {
-  const [showList, setShowList] = useState(false);
-  console.log(showList);
   return (
-    <nav className="w-[250px]">
-      <div className="flex flex-col gap-2 justify-start  p-4 h-full ">
-        <Typography
-          variant={"link"}
-          onClick={() => setShowList((prev) => !prev)}
-        >
-          <div className="relative flex w-full cursor-pointer items-center justify-between py-1  text-left">
-            Clients{" "}
-            <div className="transition ease-in-out delay-150 hover:rotate-90">
-              <ChevronRight />
-            </div>
-          </div>
-        </Typography>
-
-        {showList && (
-          <ul
-            className={`px-0.5 last-of-type:mb-0 mr-6 border-l border-gray-200 pl-3 dark:border-gray-300 ml-5 transform ${
-              showList ? "translate-y-6" : ""
-            } transition duration-300`}
-          >
-            <li className="mb-2">
-              <Link href={"/customers"} className="focus:text-blue-700">
-                Liste client
-              </Link>
-            </li>
-            <li className="border-transparent hover:border-blue-500 focus:border-blue-500 mb-3">
-              <Link href={"/customers/new"} className="focus:text-blue-700">
-                Nouveau client
-              </Link>
-            </li>
-          </ul>
-        )}
-
-        <Link
-          href={"/cra"}
-          className="text-indigo-500 font-medium hover:underline cursor-pointer"
-        >
-          CRA
-        </Link>
-      </div>
+    <nav className="w-[250px] border-r ">
+      <NavigationMenu className=" w-full mt-3">
+        <NavigationMenuList className=" flex-col gap-3 items-start w-full ">
+          <NavigationMenuItem className="flex-1">
+            <Link href="/cra" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                CRA
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/invoice" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Factures
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/customers" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                CRM
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
     </nav>
   );
 };
