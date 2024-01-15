@@ -11,19 +11,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Invoice } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Check, Euro, MoreHorizontal, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpDown, Check, Euro, Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { deleteInvoice, payInvoice, validateInvoice } from "./invoiceAction";
+import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import Link from "next/link";
 
 export const columnsInvoice: ColumnDef<Invoice>[] = [
   {
@@ -88,24 +85,6 @@ export const columnsInvoice: ColumnDef<Invoice>[] = [
     },
   },
   {
-    accessorKey: "totalHT",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Total HT
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell({ row }) {
-      const totalHT = row.getValue("totalHT") as string;
-      return <div className="text-right">{totalHT}€</div>;
-    },
-  },
-  {
     accessorKey: "statut",
     header: ({ column }) => {
       return (
@@ -123,29 +102,9 @@ export const columnsInvoice: ColumnDef<Invoice>[] = [
       return <div className="text-center">{statut}</div>;
     },
   },
-  {
-    accessorKey: "createdAt",
 
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-center"
-        >
-          Date création
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const createdAt = row.getValue("createdAt") as Date;
-      const formatedDate = createdAt.toLocaleDateString("fr");
-      return <div className="text-center">{formatedDate}</div>;
-    },
-  },
   {
-    accessorKey: "validatedAt",
+    accessorKey: "validateAt",
     header: ({ column }) => {
       return (
         <Button
@@ -158,7 +117,7 @@ export const columnsInvoice: ColumnDef<Invoice>[] = [
       );
     },
     cell: ({ row }) => {
-      const validatedAt = row.getValue("validatedAt") as Date;
+      const validatedAt = row.getValue("validateAt") as Date;
       const formatedDate = validatedAt
         ? validatedAt.toLocaleDateString("fr")
         : null;
@@ -166,139 +125,204 @@ export const columnsInvoice: ColumnDef<Invoice>[] = [
     },
   },
   {
+    accessorKey: "payedAt",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date paiement
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const payedAt = row.getValue("payedAt") as Date;
+      const formatedDate = payedAt ? payedAt.toLocaleDateString("fr") : null;
+      return <div className="text-center">{formatedDate}</div>;
+    },
+  },
+  {
     id: "Actions",
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
-      const validatedAt = row.getValue("validatedAt") as Date;
-      const formatedDate = validatedAt
-        ? validatedAt.toLocaleDateString("fr")
-        : null;
-      return (
-        <div className="flex gap-2">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant={"destructive"} size={"icon"} title="Supprimer">
-                <Trash2 size={"16"} />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction>Supprimer</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className="bg-green-500" size={"icon"}>
-                <Check />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction>Supprimer</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className="bg-blue-500" size={"icon"}>
-                <Euro />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction>Supprimer</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      );
+      return <Actions invoice={row.original} />;
     },
   },
-  /*   { accessorKey: "statut", header: "Numéro TVA" },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const customer = row.original;
-
-      return <ActionMenu id={customer.id} />;
-    },
-  }, */
 ];
 
-const ActionMenu = (props: { id: number }) => {
+const Actions = (props: { invoice: Invoice }) => {
   const router = useRouter();
-  async function deleteCustomer(customerId: number) {
-    /*     const customer = await deleteCustomerAction(customerId);
-    toast.success("le client " + customer.businessName + " a été supprimé");
-    router.refresh(); */
+
+  const editAction = (
+    <Link href={`/invoice/edit/${props.invoice.id}`}>
+      <Button size={"icon"} title="Editer">
+        <Pencil size={16} />
+      </Button>
+    </Link>
+  );
+
+  const showAction = (
+    <Link href="/invoice/show">
+      <Button size={"icon"} title="show">
+        <Eye />
+      </Button>
+    </Link>
+  );
+
+  let actions = null;
+
+  if (props.invoice.statut === "DRAFT") {
+    actions = (
+      <>
+        {editAction}
+        {showAction}
+        <DeleteAction invoiceId={props.invoice.id} router={router} />
+        <ValidateAction invoiceId={props.invoice.id} router={router} />
+      </>
+    );
+  }
+  if (props.invoice.statut === "VALIDATED") {
+    actions = (
+      <>
+        {showAction}
+        <PayAction invoiceId={props.invoice.id} router={router} />
+      </>
+    );
+  }
+
+  if (props.invoice.statut === "PAYED") {
+    actions = <>{showAction}</>;
+  }
+
+  return <div className="flex gap-2">{actions}</div>;
+};
+
+const DeleteAction = (props: {
+  invoiceId: number;
+  router: AppRouterInstance;
+}) => {
+  async function onConfirmDelete() {
+    const deletedInvoice = await deleteInvoice(props.invoiceId);
+    if (deletedInvoice) {
+      toast.success("la facture " + deletedInvoice.number + " a été supprimée");
+      props.router.refresh();
+    } else {
+      toast.error("une erreur est survenue");
+    }
   }
 
   return (
-    <DropdownMenu>
-      <AlertDialog>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <Link href={`/customers/edit/${props.id}`}>Editer client</Link>
-          </DropdownMenuItem>
-          <AlertDialogTrigger asChild>
-            <DropdownMenuItem>Supprimer client</DropdownMenuItem>
-          </AlertDialogTrigger>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant={"destructive"} size={"icon"} title="Supprimer">
+          <Trash2 size={"16"} />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Etes-vous sur?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Cette action est définitive. Confirmer la suppression de cette
+            facture?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirmDelete}>
+            Supprimer
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
 
-          <DropdownMenuSeparator />
-        </DropdownMenuContent>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                deleteCustomer(props.id);
-              }}
-            >
-              Supprimer
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </DropdownMenu>
+const ValidateAction = (props: {
+  invoiceId: number;
+  router: AppRouterInstance;
+}) => {
+  async function onConfirmValidate() {
+    const validatedInvoice = await validateInvoice(props.invoiceId);
+    if (validatedInvoice) {
+      toast.success("la facture " + validatedInvoice.number + " a été validée");
+      props.router.refresh();
+    } else {
+      toast.error("une erreur est survenue");
+    }
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="bg-green-500" size={"icon"}>
+          <Check />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Etes-vous sur?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Après validation, cette facture ne pourra plus étre modifiée
+            confirmez vous?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirmValidate}>
+            Valider
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const PayAction = (props: { invoiceId: number; router: AppRouterInstance }) => {
+  const [payDate, setPayDate] = useState<Date | undefined>(new Date());
+
+  async function onConfirmPay() {
+    if (!payDate) {
+      alert("Veuillez sélectionner une date de paiement!");
+      return;
+    }
+    const payedInvoice = await payInvoice(props.invoiceId, payDate);
+    if (payedInvoice) {
+      toast.success("la facture " + payedInvoice.number + " a été payée");
+      props.router.refresh();
+    } else {
+      toast.error("une erreur est survenue");
+    }
+  }
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="bg-blue-500" size={"icon"}>
+          <Euro />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Veuillez sélectionner la date de paiement
+          </AlertDialogTitle>
+          <AlertDialogDescription className="mx-auto">
+            <Calendar
+              mode="single"
+              selected={payDate}
+              onSelect={setPayDate}
+              className="rounded-md border"
+            />
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirmPay}>
+            Marqué comme payé le {payDate?.toLocaleDateString()}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };

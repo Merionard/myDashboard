@@ -1,6 +1,7 @@
 "use client";
 
 import { Typography } from "@/components/ui/Typography";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,23 +12,22 @@ import {
   TableHeader,
 } from "@/components/ui/table";
 import { TableRow } from "@mui/material";
+import { Terminal } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
-import { Invoice, InvoiceLine, InvoiceSchema } from "../invoiceSchema";
-import { CustomerWithAddressAndContact } from "./page";
+import { toast } from "sonner";
+import { createInvoice, editInvoice } from "../invoiceAction";
+import { Invoice, InvoiceLine } from "../invoiceSchema";
 import Conditions from "./conditionsReglement";
 import { InvoiceLineForm } from "./invoiceLineForm";
+import { CustomerWithAddressAndContact } from "./page";
 import SelectCustomer from "./selectCustomer";
 import Total from "./total";
-import { createInvoice } from "../invoiceAction";
-import { toast } from "sonner";
-import { z } from "zod";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 type Props = {
   customers: CustomerWithAddressAndContact[];
+  invoiceToEdit?: Invoice;
 };
 function initInvoice() {
   const invoice: Invoice = {
@@ -55,8 +55,10 @@ function initInvoice() {
   };
   return invoice;
 }
-export const InvoiceForm = ({ customers }: Props) => {
-  const [invoice, setInvoice] = useState<Invoice>(() => initInvoice());
+export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
+  const [invoice, setInvoice] = useState<Invoice>(
+    () => invoiceToEdit ?? initInvoice()
+  );
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerWithAddressAndContact | null>(null);
   const [validationMsg, setValidationMsg] = useState<null | string>(null);
@@ -228,11 +230,16 @@ export const InvoiceForm = ({ customers }: Props) => {
       return;
     }
     setValidationMsg(null);
-    const { data, serverError, validationError } = await createInvoice(invoice);
+    const { data, serverError, validationError } = invoiceToEdit
+      ? await editInvoice(invoice)
+      : await createInvoice(invoice);
     if (data) {
       router.push("/invoice");
       router.refresh();
-      toast.success("facture " + data.number + " créée avec succès");
+      const msg = invoiceToEdit
+        ? "facture " + data.number + " modifié avec succès"
+        : "facture " + data.number + " créée avec succès";
+      toast.success(msg);
     } else {
       toast.error(serverError);
     }

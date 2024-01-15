@@ -44,3 +44,10 @@ export type ModeReglementType =
   | "Virement bancaire"
   | "Carte bancaire"
   | "Paypal";
+
+export type ServiceType =
+  | "Acompte"
+  | "Heures"
+  | "Jours"
+  | "Produit"
+  | "Service";

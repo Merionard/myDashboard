@@ -47,7 +47,70 @@ export const createInvoice = authenticatedAction(
   }
 );
 
+export const editInvoice = authenticatedAction(InvoiceSchema, async (data) => {
+  const updatedInvoice = await prisma.invoice.update({
+    where: { id: data.id },
+    data: {
+      conditionReglement: data.conditionReglement,
+      createdAt: new Date(),
+      customerAddress: data.customerAddress,
+      customerCountry: data.customerCountry,
+      customerName: data.customerName,
+      modeReglement: data.modeReglement,
+      statut: "DRAFT",
+      type: "INVOICE",
+      customerMail: data.customerMail,
+      customerSiren: data.customerSiren,
+      customerSociety: data.customerSociety,
+      totalHT: data.totalHT,
+      totalTTC: data.totalTTC,
+      lines: {
+        updateMany: {
+          where: {
+            id: {
+              in: data.lines
+                .filter((l) => l.id !== undefined)
+                .map((l) => l.id) as number[],
+            },
+          },
+          data: data.lines.map(({ ihmId, id, ...line }) => line),
+        },
+      },
+    },
+  });
+
+  return updatedInvoice;
+});
+
 export const deleteInvoice = async (invoiceId: number) => {
-  const deletedInvoice = prisma.invoice.delete({ where: { id: invoiceId } });
-  return deleteInvoice;
+  const deletedInvoice = await prisma.invoice.delete({
+    where: { id: invoiceId },
+  });
+  return deletedInvoice;
+};
+
+export const validateInvoice = async (invoiceId: number) => {
+  const validatedInvoice = await prisma.invoice.update({
+    where: {
+      id: invoiceId,
+    },
+    data: {
+      validateAt: new Date(),
+      statut: "VALIDATED",
+    },
+  });
+  return validatedInvoice;
+};
+
+export const payInvoice = async (invoiceId: number, payedAt: Date) => {
+  const payedInvoice = await prisma.invoice.update({
+    where: {
+      id: invoiceId,
+    },
+    data: {
+      payedAt: payedAt,
+      statut: "PAYED",
+    },
+  });
+  return payedInvoice;
 };

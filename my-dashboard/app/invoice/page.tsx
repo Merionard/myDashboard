@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function InvoiceDatatalbe() {
-  const invoices = await prisma.invoice.findMany();
+  const invoices = await prisma.invoice.findMany({ orderBy: { id: "desc" } });
 
   return (
     <div className="container mx-auto py-10">

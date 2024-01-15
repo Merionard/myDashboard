@@ -9,6 +9,7 @@ export type CustomerWithAddressAndContact = Prisma.CustomerGetPayload<{
 export default async function NewInvoice() {
   const customers = await prisma.customer.findMany({
     include: { contact: true, address: true },
+    orderBy: { id: "desc" },
   });
 
   return (
