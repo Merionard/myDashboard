@@ -31,7 +31,7 @@ export const createInvoice = authenticatedAction(
         number: "F" + invoiceCount.toString().padStart(5, "0"),
         lines: {
           createMany: {
-            data: data.lines.map(({ ihmId, ...line }) => line),
+            data: data.lines.map(({ ihmId, id, ...line }) => line),
           },
         },
       },
@@ -64,20 +64,31 @@ export const editInvoice = authenticatedAction(InvoiceSchema, async (data) => {
       customerSociety: data.customerSociety,
       totalHT: data.totalHT,
       totalTTC: data.totalTTC,
-      lines: {
-        updateMany: {
-          where: {
-            id: {
-              in: data.lines
-                .filter((l) => l.id !== undefined)
-                .map((l) => l.id) as number[],
-            },
-          },
-          data: data.lines.map(({ ihmId, id, ...line }) => line),
-        },
-      },
     },
   });
+
+  await prisma.invoiceLine.deleteMany({
+    where: {
+      id: { in: data.deletedLines },
+    },
+  });
+
+  for (const l of data.lines) {
+    if (l.id == null) {
+      const { id, ihmId, ...rest } = l;
+      const lineToCreate = { ...rest };
+      await prisma.invoiceLine.create({
+        data: { ...lineToCreate, invoiceId: lineToCreate.invoiceId as number },
+      });
+    } else {
+      const { id, ihmId, ...rest } = l;
+      const lineToUpdate = { ...rest, id };
+      await prisma.invoiceLine.update({
+        where: { id: l.id },
+        data: { ...lineToUpdate },
+      });
+    }
+  }
 
   return updatedInvoice;
 });

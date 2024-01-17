@@ -28,7 +28,7 @@ type Props = {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ihmId: string
   ) => void;
-  deleteLine: (ihmId: string) => void;
+  deleteLine: (ihmId: string, id: number | null | undefined) => void;
   duplicateLine: (ihmId: string) => void;
   onSelectType: (
     ihmId: string,
@@ -70,7 +70,7 @@ export const InvoiceLineForm = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger className="border rounded-full p-1 hover:bg-slate-200">
-                  <X onClick={() => deleteLine(line.ihmId)} />
+                  <X onClick={() => deleteLine(line.ihmId, line.id)} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Supprimer</p>

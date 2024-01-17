@@ -36,6 +36,7 @@ export default async function EditInvoice({
       ...l,
       ihmId: Math.floor(Math.random() * 1000).toString(),
       type: type,
+      invoiceId: l.invoiceId,
     };
   });
 
@@ -44,6 +45,7 @@ export default async function EditInvoice({
     conditionReglement: condition,
     modeReglement: modeReglement,
     lines: invoiceFormLines,
+    deletedLines: [],
   };
   return <InvoiceForm customers={customers} invoiceToEdit={invoice} />;
 }

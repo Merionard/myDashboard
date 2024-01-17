@@ -52,6 +52,7 @@ function initInvoice() {
     totalHT: 0,
     totalTTC: 0,
     type: "INVOICE",
+    deletedLines: [],
   };
   return invoice;
 }
@@ -142,17 +143,22 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
           {
             ...lineToDuplicate,
             ihmId: Math.floor(Math.random() * 1000).toString(),
+            id: null,
           },
         ],
       }));
     }
   };
 
-  const deleteLine = (ihmId: string) => {
+  const deleteLine = (ihmId: string, id: number | null | undefined) => {
     const indexToDelete = invoice.lines.findIndex((i) => i.ihmId === ihmId);
     const updatedLines = [...invoice.lines];
     updatedLines.splice(indexToDelete, 1);
-    setInvoice((prev) => ({ ...prev, lines: updatedLines }));
+    setInvoice((prev) => ({
+      ...prev,
+      lines: updatedLines,
+      deletedLines: id ? [...prev.deletedLines, id] : [...prev.deletedLines],
+    }));
   };
 
   const onSelectType = (
@@ -219,11 +225,13 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
       VatAmount: 0,
       vatRate: 0,
       ihmId: Math.floor(Math.random() * 1000).toString(),
+      invoiceId: invoiceToEdit ? invoice.id : undefined,
     };
     setInvoice((prev) => ({ ...prev, lines: [...prev.lines, newLine] }));
   };
 
-  const saveNewInvoice = async () => {
+  const saveInvoice = async () => {
+    console.log(invoice);
     const { success, msg } = validateInvoice();
     if (!success) {
       setValidationMsg(msg);
@@ -241,7 +249,11 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
         : "facture " + data.number + " créée avec succès";
       toast.success(msg);
     } else {
-      toast.error(serverError);
+      console.log(serverError);
+      console.log(validationError);
+      toast.error(
+        validationError ? "erreur de validation cf log" : serverError
+      );
     }
   };
 
@@ -341,7 +353,7 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
             <Link href={"/invoice"}>
               <Button variant={"destructive"}>Annuler</Button>
             </Link>
-            <Button onClick={saveNewInvoice}>Enregistrer</Button>
+            <Button onClick={saveInvoice}>Enregistrer</Button>
           </div>
         </CardContent>
       </Card>

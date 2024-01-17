@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 
 export const InvoiceLineSchema = z.object({
-  id: z.number().optional(),
+  id: z.number().optional().nullable(),
   ihmId: z.string(),
   invoiceId: z.number().optional(),
   type: z.enum(ServiceTypes),
@@ -38,6 +38,7 @@ export const InvoiceSchema = z.object({
   totalHT: z.number(),
   totalTTC: z.number(),
   lines: z.array(InvoiceLineSchema),
+  deletedLines: z.array(z.number()),
 });
 
 export type Invoice = z.infer<typeof InvoiceSchema>;
