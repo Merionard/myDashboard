@@ -18,6 +18,7 @@ import { useQuery, useQueryClient } from "react-query";
 import { addLine } from "./craAction";
 import CraTableRow from "./craTableRow";
 import { DateHeader } from "./dateHeader";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 type Props = {
   users: User[];
@@ -157,41 +158,44 @@ export default function CraTable({ users, userId, customers }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <DateHeader
-        changeMonth={onChangeMonth}
-        setYear={setYear}
-        month={month}
-        year={year}
-      />
-      <div className="flex justify-start">
+    <Card>
+      <CardHeader>
+        <DateHeader
+          changeMonth={onChangeMonth}
+          setYear={setYear}
+          month={month}
+          year={year}
+        />
+      </CardHeader>
+      <CardContent>
         <Button
-          className="flex justify-start gap-2"
+          className="flex justify-start gap-2 mb-3"
           variant={"outline"}
           onClick={() => handleClickAddLine()}
         >
           <PlusCircle /> Ajouter une ligne
         </Button>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>{columnsDayName}</TableRow>
-          <TableRow>{columnDayNumber}</TableRow>
-        </TableHeader>
-        <TableBody>
-          {workPeriod.lines.map((workLine) => (
-            <CraTableRow
-              key={workLine.id}
-              customers={customers}
-              datesOfCurrentMonth={datesOfCurrentMonth}
-              workLine={workLine}
-              month={month}
-              year={year}
-              holidays={holidays}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>{columnsDayName}</TableRow>
+            <TableRow>{columnDayNumber}</TableRow>
+          </TableHeader>
+          <TableBody>
+            {workPeriod.lines.map((workLine) => (
+              <CraTableRow
+                key={workLine.id}
+                customers={customers}
+                datesOfCurrentMonth={datesOfCurrentMonth}
+                workLine={workLine}
+                month={month}
+                year={year}
+                holidays={holidays}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

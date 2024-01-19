@@ -1,11 +1,9 @@
 "use client";
 
-import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
-import { Navbar } from "./layout/navBar";
-import { Card, CardContent } from "./ui/card";
 import { Header } from "./layout/header";
+import { Navbar } from "./layout/navBar";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
@@ -15,7 +13,9 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
         <div className="flex-1 flex flex-col sm:flex-row ">
           <Navbar />
-          <main className="w-full mx-auto  p-4">{children}</main>
+          <main className="w-full mx-auto bg-primary-foreground">
+            {children}
+          </main>
         </div>
         <footer className="bg-gray-100">Footer</footer>
       </div>
