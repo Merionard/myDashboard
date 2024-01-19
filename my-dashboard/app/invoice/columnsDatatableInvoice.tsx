@@ -157,7 +157,7 @@ const Actions = (props: { invoice: Invoice }) => {
 
   const editAction = (
     <Link href={`/invoice/edit/${props.invoice.id}`}>
-      <Button size={"icon"} title="Editer">
+      <Button size={"icon"} title="Editer" className="bg-orange-500">
         <Pencil size={16} />
       </Button>
     </Link>
