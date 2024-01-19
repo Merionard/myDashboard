@@ -115,9 +115,9 @@ model Invoice {
   number        String @unique
   type          InvoiceType
   statut        InvoiceStatus
-  customerName  String
+  customerName  String 
   customerSociety String?
-  customerSiren  String?
+  customerSiren  String? @unique
   customerVatNumber String?
   customerAddress String
   customerCountry String

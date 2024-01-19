@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   customers: CustomerWithAddressAndContact[];
-  selectedCustomer: CustomerWithAddressAndContact | null;
+  selectedCustomer: CustomerWithAddressAndContact | null | undefined;
   onSelectCustomer: (c: CustomerWithAddressAndContact) => void;
 };
 

@@ -60,8 +60,13 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
   const [invoice, setInvoice] = useState<Invoice>(
     () => invoiceToEdit ?? initInvoice()
   );
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<CustomerWithAddressAndContact | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<
+    CustomerWithAddressAndContact | null | undefined
+  >(
+    invoiceToEdit
+      ? customers.find((c) => c.siren === invoiceToEdit.customerSiren)
+      : null
+  );
   const [validationMsg, setValidationMsg] = useState<null | string>(null);
 
   const router = useRouter();
@@ -136,17 +141,23 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
   const duplicateLine = (ihmId: string) => {
     const lineToDuplicate = invoice.lines.find((l) => l.ihmId === ihmId);
     if (lineToDuplicate) {
-      setInvoice((prev) => ({
-        ...prev,
-        lines: [
+      setInvoice((prev) => {
+        const lines = [
           ...prev.lines,
           {
             ...lineToDuplicate,
             ihmId: Math.floor(Math.random() * 1000).toString(),
             id: null,
           },
-        ],
-      }));
+        ];
+        const total = calculateTotal(lines);
+        return {
+          ...prev,
+          totalTTC: total.totalTTC,
+          totalHT: total.totalHT,
+          lines: lines,
+        };
+      });
     }
   };
 
@@ -154,11 +165,17 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
     const indexToDelete = invoice.lines.findIndex((i) => i.ihmId === ihmId);
     const updatedLines = [...invoice.lines];
     updatedLines.splice(indexToDelete, 1);
-    setInvoice((prev) => ({
-      ...prev,
-      lines: updatedLines,
-      deletedLines: id ? [...prev.deletedLines, id] : [...prev.deletedLines],
-    }));
+    setInvoice((prev) => {
+      const total = calculateTotal(updatedLines);
+
+      return {
+        ...prev,
+        totalTTC: total.totalTTC,
+        totalHT: total.totalHT,
+        lines: updatedLines,
+        deletedLines: id ? [...prev.deletedLines, id] : [...prev.deletedLines],
+      };
+    });
   };
 
   const onSelectType = (
@@ -273,8 +290,10 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
   return (
     <div className="container">
       <Card>
-        <CardHeader>
-          <CardTitle>Nouvelle Facture</CardTitle>
+        <CardHeader className="bg-primary-foreground">
+          <CardTitle>
+            {invoiceToEdit ? "Edition facture " : "Nouvelle Facture"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {validationMsg && (

@@ -164,7 +164,7 @@ const Actions = (props: { invoice: Invoice }) => {
   );
 
   const showAction = (
-    <Link href="/invoice/show">
+    <Link href={`/invoice/view/${props.invoice.id}`}>
       <Button size={"icon"} title="show">
         <Eye />
       </Button>

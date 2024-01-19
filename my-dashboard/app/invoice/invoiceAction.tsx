@@ -6,13 +6,6 @@ import { prisma } from "@/prisma/client";
 export const createInvoice = authenticatedAction(
   InvoiceSchema,
   async (data) => {
-    const compteur = await prisma.compteur.findUnique({
-      where: { type: "INVOICE" },
-    });
-    if (!compteur) {
-      await prisma.compteur.create({ data: { type: "INVOICE", count: 1 } });
-    }
-    const invoiceCount = compteur ? compteur.count : 1;
     const newInvoice = await prisma.invoice.create({
       data: {
         conditionReglement: data.conditionReglement,
@@ -28,7 +21,7 @@ export const createInvoice = authenticatedAction(
         customerSociety: data.customerSociety,
         totalHT: data.totalHT,
         totalTTC: data.totalTTC,
-        number: "F" + invoiceCount.toString().padStart(5, "0"),
+        number: "F_DRAFT",
         lines: {
           createMany: {
             data: data.lines.map(({ ihmId, id, ...line }) => line),
@@ -37,12 +30,6 @@ export const createInvoice = authenticatedAction(
       },
     });
 
-    if (compteur) {
-      await prisma.compteur.update({
-        where: { type: compteur.type },
-        data: { count: compteur.count + 1 },
-      });
-    }
     return newInvoice;
   }
 );
@@ -101,6 +88,13 @@ export const deleteInvoice = async (invoiceId: number) => {
 };
 
 export const validateInvoice = async (invoiceId: number) => {
+  const compteur = await prisma.compteur.findUnique({
+    where: { type: "INVOICE" },
+  });
+  if (!compteur) {
+    await prisma.compteur.create({ data: { type: "INVOICE", count: 1 } });
+  }
+  const invoiceCount = compteur ? compteur.count : 1;
   const validatedInvoice = await prisma.invoice.update({
     where: {
       id: invoiceId,
@@ -108,8 +102,15 @@ export const validateInvoice = async (invoiceId: number) => {
     data: {
       validateAt: new Date(),
       statut: "VALIDATED",
+      number: "F" + invoiceCount.toString().padStart(5, "0"),
     },
   });
+  if (compteur) {
+    await prisma.compteur.update({
+      where: { type: compteur.type },
+      data: { count: compteur.count + 1 },
+    });
+  }
   return validatedInvoice;
 };
 

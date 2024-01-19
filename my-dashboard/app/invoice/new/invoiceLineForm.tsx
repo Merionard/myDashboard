@@ -44,7 +44,7 @@ export const InvoiceLineForm = ({
   onSelectType,
 }: Props) => {
   return (
-    <div className="flex flex-col gap-2 border-l p-4 mb-2">
+    <div className="flex flex-col gap-2 border-l p-4 mb-2 bg-primary-foreground">
       <div className="flex justify-between">
         <Select
           onValueChange={(
@@ -96,12 +96,14 @@ export const InvoiceLineForm = ({
           label="Quantité"
           variant="standard"
           style={{ flex: "1 0 0" }}
+          className="select-all"
           type="number"
           onChange={(e) => onChangeLineCallBack(e, line.ihmId)}
           value={line.quantity}
           inputProps={{ style: { textAlign: "right" } }}
           InputProps={{
             style: { textAlign: "right" },
+            onFocus: (e) => e.target.select(),
           }}
         />
         <CustomTextField
@@ -114,6 +116,7 @@ export const InvoiceLineForm = ({
           InputProps={{
             inputComponent: NumericFormatCustom as any,
             style: { textAlign: "right" },
+            onFocus: (e) => e.target.select(),
           }}
         />
         <CustomTextField
