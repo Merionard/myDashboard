@@ -3,7 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import { Header } from "./layout/header";
-import { Navbar } from "./layout/navBar";
+import SideNav from "./layout/sidenav";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
@@ -12,7 +12,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
         <Header />
 
         <div className="flex-1 flex flex-col sm:flex-row ">
-          <Navbar />
+          <SideNav />
           <main className="w-full mx-auto bg-primary-foreground">
             {children}
           </main>
