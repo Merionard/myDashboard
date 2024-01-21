@@ -1,7 +1,7 @@
 "use client";
-import { Loader2, LogIn, LogOut, User2 } from "lucide-react";
-import { Button } from "../ui/button";
+import { LogIn, LogOut } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "../ui/button";
 
 export const AuthentBtn = () => {
   const session = useSession();
@@ -13,7 +13,7 @@ export const AuthentBtn = () => {
     );
   }
   return (
-    <Button onClick={() => signOut()} variant={"outline"} size={"sm"}>
+    <Button onClick={() => signOut()} variant={"destructive"}>
       {<LogOut size={12} className="mr-2" />}Déconnexion
     </Button>
   );
