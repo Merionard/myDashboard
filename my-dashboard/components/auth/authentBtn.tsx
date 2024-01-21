@@ -3,7 +3,7 @@ import { Loader2, LogIn, LogOut, User2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-export const LogInBtn = () => {
+export const AuthentBtn = () => {
   const session = useSession();
   if (!session.data) {
     return (

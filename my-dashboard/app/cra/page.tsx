@@ -1,7 +1,6 @@
 import { getRequiredAuthSession } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 import CraTable from "./craTable";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default async function Page() {
   const prisma = new PrismaClient();
