@@ -105,12 +105,12 @@ export const validateInvoice = async (invoiceId: number) => {
       number: "F" + invoiceCount.toString().padStart(5, "0"),
     },
   });
-  if (compteur) {
-    await prisma.compteur.update({
-      where: { type: compteur.type },
-      data: { count: compteur.count + 1 },
-    });
-  }
+
+  await prisma.compteur.update({
+    where: { type: "INVOICE" },
+    data: { count: compteur ? compteur.count + 1 : 2 },
+  });
+
   return validatedInvoice;
 };
 

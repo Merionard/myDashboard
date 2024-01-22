@@ -19,14 +19,16 @@ export const ProgressBar = ({ atteint, max }: Props) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger className="w-full">
-              <div className=" rounded-md bg-primary-foreground border ">
+              <div className=" rounded-md bg-primary-foreground border relative">
                 <div
                   className={
                     "h-7 bg-blue-500 flex flex-col justify-center items-center rounded-l-md"
                   }
                   style={{ width: `${pourcentage}%` }}
                 >
-                  <span className="">{pourcentage.toFixed(2)}%</span>
+                  <span className="absolute left-1/2 ">
+                    {pourcentage.toFixed(2)}%
+                  </span>
                 </div>
               </div>
             </TooltipTrigger>
