@@ -18,11 +18,11 @@ import { useState } from "react";
 
 export default function CustomerComboBox(props: {
   customers: Customer[];
-  customer: Customer;
+  customer: Customer | null;
   onSelectCustomer: (customer: Customer) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(props.customer.businessName);
+  const [value, setValue] = useState(props.customer?.businessName);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

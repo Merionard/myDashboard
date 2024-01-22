@@ -52,7 +52,6 @@ export function CustomerComboBox(props: {
 
   const majSearchValue = useDebounce((val: string) => setSearchValue(val), 500);
   const { customers, isError, isLoading } = useSearchCustomer(searchValue);
-  console.log(value);
 
   const getValueLabel = () => {
     if (value === "") {

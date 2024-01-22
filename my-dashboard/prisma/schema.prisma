@@ -45,6 +45,8 @@ model User {
   workPeriods WorkPeriod[]
   accounts      Account[]
   sessions      Session[]
+  typeActivite  String?
+  pathImg       String?
 }
 
 model Customer {

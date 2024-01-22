@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { z } from "zod";
 
 const API_CUSTOMER_URL = "https://recherche-entreprises.api.gouv.fr/search";
@@ -29,6 +28,5 @@ export const fetchCustomers = async (
   const data = await result.json();
 
   const customers = customerFromApiSchema.parse(data.results);
-  console.log(customers);
   return customers as CustomerFromApi;
 };

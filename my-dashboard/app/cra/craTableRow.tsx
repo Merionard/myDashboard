@@ -57,7 +57,9 @@ export default function CraTableRow({
   holidays,
 }: Props) {
   const [selectedCustomer, setSelectedCustomer] = useState(
-    customers.find((c) => c.id === workLine.customerId) ?? customers[0]
+    customers.find((c) => c.id === workLine.customerId) ?? customers.length > 0
+      ? customers[0]
+      : null
   );
 
   const isWeekEnd = (date: Date) => {

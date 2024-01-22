@@ -29,7 +29,9 @@ export function CustomerForm(props: {
   const [showContact, setShowContact] = useState(
     props.customer != null && props.customer.contact != null
   );
-  const [showAddress, setShowAddress] = useState(false);
+  const [showAddress, setShowAddress] = useState(
+    props.customer != null && props.customer.address != null
+  );
 
   const router = useRouter();
 
@@ -41,6 +43,11 @@ export function CustomerForm(props: {
       siren: props.customer ? props.customer.siren : undefined,
       contact: props.customer ? props.customer.contact : undefined,
       address: props.customer ? props.customer.address : [],
+      firstAddress: props.customer
+        ? props.customer.address.length > 0
+          ? props.customer.address[0]
+          : undefined
+        : undefined,
     },
   });
 
@@ -137,7 +144,9 @@ export function CustomerForm(props: {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit">Enregistrer</Button>
+            <Button onClick={() => form.handleSubmit(onSubmit)}>
+              Enregistrer
+            </Button>
           </div>
         </form>
       </Form>
