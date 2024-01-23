@@ -21,6 +21,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Link from "next/link";
+import { ConditionsReglementType } from "@/src/enums";
 
 export const columnsInvoice: ColumnDef<Invoice>[] = [
   {
@@ -104,20 +105,20 @@ export const columnsInvoice: ColumnDef<Invoice>[] = [
   },
 
   {
-    accessorKey: "validateAt",
+    accessorKey: "dueDate",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date validation
+          Date échéance
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const validatedAt = row.getValue("validateAt") as Date;
+      const validatedAt = row.getValue("dueDate") as Date;
       const formatedDate = validatedAt
         ? validatedAt.toLocaleDateString("fr")
         : null;
@@ -179,7 +180,13 @@ const Actions = (props: { invoice: Invoice }) => {
         {editAction}
         {showAction}
         <DeleteAction invoiceId={props.invoice.id} router={router} />
-        <ValidateAction invoiceId={props.invoice.id} router={router} />
+        <ValidateAction
+          invoiceId={props.invoice.id}
+          conditionReglement={
+            props.invoice.conditionReglement as ConditionsReglementType
+          }
+          router={router}
+        />
       </>
     );
   }
@@ -242,9 +249,34 @@ const DeleteAction = (props: {
 const ValidateAction = (props: {
   invoiceId: number;
   router: AppRouterInstance;
+  conditionReglement: ConditionsReglementType;
 }) => {
   async function onConfirmValidate() {
-    const validatedInvoice = await validateInvoice(props.invoiceId);
+    let dueDate = new Date();
+    switch (props.conditionReglement) {
+      case "30 jours fin de mois":
+        dueDate.setDate(dueDate.getDate() + 30);
+        dueDate = getLastDayOfMonth(dueDate.getFullYear(), dueDate.getMonth());
+        break;
+      case "45 jours":
+        dueDate.setDate(dueDate.getDate() + 45);
+        break;
+      case "45 jours fin de mois":
+        dueDate.setDate(dueDate.getDate() + 45);
+        dueDate = getLastDayOfMonth(dueDate.getFullYear(), dueDate.getMonth());
+        break;
+      case "60 jours":
+        dueDate.setDate(dueDate.getDate() + 60);
+        break;
+      case "60 jours fin de mois":
+        dueDate.setDate(dueDate.getDate() + 60);
+        dueDate = getLastDayOfMonth(dueDate.getFullYear(), dueDate.getMonth());
+        break;
+      case "90 jours":
+        dueDate.setDate(dueDate.getDate() + 90);
+        break;
+    }
+    const validatedInvoice = await validateInvoice(props.invoiceId, dueDate);
     if (validatedInvoice) {
       toast.success("la facture " + validatedInvoice.number + " a été validée");
       props.router.refresh();
@@ -326,3 +358,7 @@ const PayAction = (props: { invoiceId: number; router: AppRouterInstance }) => {
     </AlertDialog>
   );
 };
+
+function getLastDayOfMonth(year: number, month: number) {
+  return new Date(year, month + 1, 0);
+}

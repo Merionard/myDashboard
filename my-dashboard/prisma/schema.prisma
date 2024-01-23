@@ -52,7 +52,7 @@ model Customer {
   id              Int @id @default(autoincrement())
   businessName    String
   vatNumber       String?
-  siren           String?
+  siren           String? @unique
   address         Address[]
   contact         Contact?
 }
@@ -118,7 +118,7 @@ model Invoice {
   statut        InvoiceStatus
   customerName  String 
   customerSociety String?
-  customerSiren  String? @unique
+  customerSiren  String?
   customerVatNumber String?
   customerAddress String
   customerCountry String
@@ -128,6 +128,7 @@ model Invoice {
   createdAt     DateTime
   validateAt    DateTime?
   payedAt       DateTime?
+  dueDate       DateTime?
   lines       InvoiceLine[]
   totalHT     Float
   totalTTC    Float

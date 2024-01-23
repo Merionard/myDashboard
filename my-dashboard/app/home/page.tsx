@@ -1,7 +1,7 @@
 import { Typography } from "@/components/ui/Typography";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Euro } from "lucide-react";
-import ProgressBar from "./testProgress";
+import ProgressBar from "../../components/ui/testProgress";
 import { prisma } from "@/prisma/client";
 import { getRequiredAuthSession } from "@/lib/auth";
 

@@ -87,7 +87,7 @@ export const deleteInvoice = async (invoiceId: number) => {
   return deletedInvoice;
 };
 
-export const validateInvoice = async (invoiceId: number) => {
+export const validateInvoice = async (invoiceId: number, dueDate: Date) => {
   const compteur = await prisma.compteur.findUnique({
     where: { type: "INVOICE" },
   });
@@ -103,6 +103,7 @@ export const validateInvoice = async (invoiceId: number) => {
       validateAt: new Date(),
       statut: "VALIDATED",
       number: "F" + invoiceCount.toString().padStart(5, "0"),
+      dueDate: dueDate,
     },
   });
 
