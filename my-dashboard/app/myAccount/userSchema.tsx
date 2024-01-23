@@ -8,6 +8,9 @@ export const userSchema = z.object({
   typeActivite: z.string().optional(),
 });
 
-export const TypeActiviteEnums = ["artisanales", "commerciales", "libérales"];
+export const TypeActiviteEnums = [
+  { type: "commerciales", plafond: 188700 },
+  { type: "service", plafond: 77700 },
+];
 
-export type TypeActivite = "artisanales" | "commerciales" | "libérales";
+export type TypeActivite = "service" | "commerciales";

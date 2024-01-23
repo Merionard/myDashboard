@@ -104,8 +104,8 @@ export const UserForm = ({ user }: { user: User }) => {
                 </FormControl>
                 <SelectContent>
                   {TypeActiviteEnums.map((type, index) => (
-                    <SelectItem value={type} key={index}>
-                      {type}
+                    <SelectItem value={type.type} key={index}>
+                      {type.type}
                     </SelectItem>
                   ))}
                 </SelectContent>

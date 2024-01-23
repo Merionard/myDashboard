@@ -1,9 +1,10 @@
-import { Typography } from "@/components/ui/Typography";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Euro, Info } from "lucide-react";
-import ProgressBar from "../../components/ui/testProgress";
-import { prisma } from "@/prisma/client";
 import { getRequiredAuthSession } from "@/lib/auth";
+import { prisma } from "@/prisma/client";
+import { AlertTriangle, Euro } from "lucide-react";
+import ProgressBar from "../../components/ui/testProgress";
+import { TypeActiviteEnums } from "../myAccount/userSchema";
 import CaInfo from "./caInfo";
 
 export default async function HomePage() {
@@ -11,6 +12,8 @@ export default async function HomePage() {
   const startOfYear = new Date(today.getFullYear(), 0, 1);
   const endOfYear = new Date(today.getFullYear() + 1, 0, 0);
   const session = await getRequiredAuthSession();
+
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
 
   const currentCA = await prisma.invoice.aggregate({
     where: {
@@ -31,12 +34,23 @@ export default async function HomePage() {
     include: { lines: { include: { workDays: true } } },
   });
 
+  const lateInvoices = await prisma.invoice.findMany({
+    where: {
+      dueDate: { lt: today },
+      statut: "VALIDATED",
+    },
+  });
+
   const nbDaysWorkedOnCurrentMonth =
     currentWorkPeriod?.lines
       .map((l) => l.workDays)
       .flatMap((w) => w)
       .map((w) => w.duration)
       .reduce((nbday1, nbday2) => nbday1 + nbday2, 0) ?? 0;
+
+  const maxCA = TypeActiviteEnums.find(
+    (a) => a.type === user?.typeActivite
+  )?.plafond;
 
   return (
     <div className="container mt-5">
@@ -88,10 +102,40 @@ export default async function HomePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <ProgressBar
-                  max={72500}
-                  atteint={currentCA._sum.totalTTC ?? 0}
-                />
+                {maxCA ? (
+                  <ProgressBar
+                    max={maxCA}
+                    atteint={currentCA._sum.totalTTC ?? 0}
+                  />
+                ) : (
+                  <Alert variant={"destructive"}>
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Plafond non défini!</AlertTitle>
+                    <AlertDescription>
+                      Pour avoir un plafond qui correspond à votre activité
+                      veuillez saisir dans votre profil votre type
+                      d&apos;activité
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <h3 className="tracking-tight text-sm font-medium">
+                    Factures en retard
+                  </h3>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {lateInvoices.length === 0 ? (
+                  <p className="text-2xl font-bold text-center">
+                    0 facture en retard
+                  </p>
+                ) : (
+                  "test"
+                )}
               </CardContent>
             </Card>
           </div>
