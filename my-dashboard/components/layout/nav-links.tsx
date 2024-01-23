@@ -8,16 +8,16 @@ import { usePathname } from "next/navigation";
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: "Home", href: "/home", icon: Home },
+  { name: "Home", href: "/MyAE/home", icon: Home },
   {
     name: "Invoices",
-    href: "/invoice",
+    href: "/MyAE/invoice",
     icon: Receipt,
   },
-  { name: "Customers", href: "/customers", icon: UsersRound },
+  { name: "Customers", href: "/MyAE/customers", icon: UsersRound },
   {
     name: "CRA",
-    href: "/cra",
+    href: "/MyAE/cra",
     icon: CalendarDays,
   },
 ];

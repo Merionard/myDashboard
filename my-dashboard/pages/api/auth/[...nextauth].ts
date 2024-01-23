@@ -26,6 +26,14 @@ export const authOptions: AuthOptions = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      console.log("url", url);
+      console.log("baseUrl", baseUrl);
+
+      if (url.endsWith("/")) return baseUrl + "/MyAE/home";
+
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
   },
 };
 

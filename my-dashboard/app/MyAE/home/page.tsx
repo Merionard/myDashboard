@@ -1,17 +1,24 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getRequiredAuthSession } from "@/lib/auth";
+import { getAuthSession, getRequiredAuthSession } from "@/lib/auth";
 import { prisma } from "@/prisma/client";
-import { AlertTriangle, Euro } from "lucide-react";
-import ProgressBar from "../../components/ui/testProgress";
-import { TypeActiviteEnums } from "../myAccount/userSchema";
+import { AlertTriangle, Check, Euro } from "lucide-react";
 import CaInfo from "./caInfo";
+import Link from "next/link";
+import { TypeActiviteEnums } from "../myAccount/userSchema";
+import ProgressBar from "@/components/ui/testProgress";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 
 export default async function HomePage() {
   const today = new Date();
   const startOfYear = new Date(today.getFullYear(), 0, 1);
   const endOfYear = new Date(today.getFullYear() + 1, 0, 0);
-  const session = await getRequiredAuthSession();
+  const session = await getAuthSession();
+
+  if (session == null) {
+    return redirect("/");
+  }
 
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
 
@@ -130,11 +137,17 @@ export default async function HomePage() {
               </CardHeader>
               <CardContent>
                 {lateInvoices.length === 0 ? (
-                  <p className="text-2xl font-bold text-center">
-                    0 facture en retard
+                  <p className="text-2xl font-bold flex justify-center items-center">
+                    0 <Check color="green" />
                   </p>
                 ) : (
-                  "test"
+                  <ul>
+                    {lateInvoices.map((i) => (
+                      <li key={i.id}>
+                        <Link href={`/invoice/view/${i.id}`}>{i.number}</Link>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </CardContent>
             </Card>

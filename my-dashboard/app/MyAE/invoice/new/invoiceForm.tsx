@@ -259,7 +259,7 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
       ? await editInvoice(invoice)
       : await createInvoice(invoice);
     if (data) {
-      router.push("/invoice");
+      router.push("/MyAE/invoice");
       router.refresh();
       const msg = invoiceToEdit
         ? "facture " + data.number + " modifié avec succès"

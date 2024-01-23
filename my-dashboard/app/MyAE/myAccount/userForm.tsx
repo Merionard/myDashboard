@@ -41,7 +41,7 @@ export const UserForm = ({ user }: { user: User }) => {
   async function onSubmit(values: z.infer<typeof userSchema>) {
     const { data, serverError } = await editUser(values);
     if (data) {
-      router.push("/home");
+      router.push("/MyAE/home");
       router.refresh();
       toast.success("Maj effectuée avec succès!");
     } else if (serverError) {

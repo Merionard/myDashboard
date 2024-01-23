@@ -1,19 +1,26 @@
 import { prisma } from "@/prisma/client";
-import { DataTable } from "../../components/dataTable";
 import { columns } from "./columnsDatatable";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { DataTable } from "@/components/dataTable";
+import { getAuthSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function CustomersList() {
+  const session = await getAuthSession();
+
+  if (session == null) {
+    return redirect("/");
+  }
   const customers = await prisma.customer.findMany();
 
   return (
     <div className="container mx-auto mt-5">
       <Card>
         <CardHeader>
-          <Link href="/customers/new" className="flex justify-end">
+          <Link href="/MyAE/customers/new" className="flex justify-end">
             <Button>
               <PlusCircle size={"sm"} className="mr-2" />
               Nouveau client

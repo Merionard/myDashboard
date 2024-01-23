@@ -56,7 +56,7 @@ export function CustomerForm(props: {
       ? await updateCustomerAction(values)
       : await newCustomerAction(values);
     if (data) {
-      router.push("/customers");
+      router.push("/MyAE/customers");
       router.refresh();
       toast.success(data);
     } else if (serverError) {

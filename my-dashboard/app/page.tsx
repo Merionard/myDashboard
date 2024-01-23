@@ -1,87 +1,45 @@
-import { Typography } from "@/components/ui/Typography";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Euro } from "lucide-react";
-import { prisma } from "@/prisma/client";
-import { getRequiredAuthSession } from "@/lib/auth";
-import ProgressBar from "@/components/ui/testProgress";
+"use client";
+import { Button } from "@/components/ui/button";
+import { lusitana } from "@/components/ui/font";
+import { signIn } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
 
-export default async function HomePage() {
-  const today = new Date();
-  const startOfYear = new Date(today.getFullYear(), 0, 1);
-  const endOfYear = new Date(today.getFullYear() + 1, 0, 0);
-  const session = await getRequiredAuthSession();
-
-  const currentCA = await prisma.invoice.aggregate({
-    where: {
-      statut: "PAYED",
-      validateAt: { gte: startOfYear, lt: endOfYear },
-    },
-    _sum: {
-      totalTTC: true,
-    },
-  });
-
-  const currentWorkPeriod = await prisma.workPeriod.findFirst({
-    where: {
-      userId: session.user.id,
-      year: today.getFullYear(),
-      month: today.getMonth(),
-    },
-    include: { lines: { include: { workDays: true } } },
-  });
-
-  const nbDaysWorkedOnCurrentMonth =
-    currentWorkPeriod?.lines
-      .map((l) => l.workDays)
-      .flatMap((w) => w)
-      .map((w) => w.duration)
-      .reduce((nbday1, nbday2) => nbday1 + nbday2, 0) ?? 0;
-
+export default function Page() {
   return (
-    <div className="container mt-5">
-      <Card>
-        <CardHeader>
-          <CardTitle>Dashobard</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-3 md:flex-row">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <h3 className="tracking-tight text-sm font-medium">
-                    Chiffre affaire en cours
-                  </h3>
-                  <Euro className="h-4 w-4 text-muted-foreground" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">
-                  {currentCA._sum.totalTTC != null
-                    ? currentCA._sum.totalTTC.toFixed(2)
-                    : "0.00"}
-                  €
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <h3 className="tracking-tight text-sm font-medium">
-                    Nombre de jours travaillé ce mois
-                  </h3>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold text-center">
-                  {nbDaysWorkedOnCurrentMonth}
-                </p>
-              </CardContent>
-            </Card>
-
-            <ProgressBar max={72500} atteint={currentCA._sum.totalTTC ?? 0} />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <main className="flex min-h-screen flex-col p-6">
+      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52"></div>
+      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
+        <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
+          <p
+            className={`text-xl text-gray-800 md:text-3xl md:leading-normal ${lusitana.className}`}
+          >
+            <strong>Welcome to Acme.</strong> This is the example for the{" "}
+            <a href="https://nextjs.org/learn/" className="text-red-600">
+              Next.js Learn Course
+            </a>
+            , brought to you by Vercel.
+          </p>
+          <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" />
+          <Button onClick={() => signIn()}>Log in</Button>
+        </div>
+        <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
+          <Image
+            src="/hero-desktop.png"
+            width={1000}
+            height={760}
+            className="hidden md:block"
+            alt="Screenshots of the dashboard project showing desktop and mobile versions"
+          />
+          <Image
+            src={"/hero-mobile.png"}
+            width={560}
+            height={620}
+            className="block md:hidden"
+            alt="blabla"
+          />
+        </div>
+      </div>
+    </main>
   );
 }
