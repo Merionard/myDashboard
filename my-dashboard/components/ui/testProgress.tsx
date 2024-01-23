@@ -26,7 +26,7 @@ export const ProgressBar = ({ atteint, max }: Props) => {
                   }
                   style={{ width: `${pourcentage}%` }}
                 >
-                  <span className="absolute left-1/2 ">
+                  <span className="absolute left-1/3 ">
                     {pourcentage.toFixed(2)}%
                   </span>
                 </div>
@@ -41,7 +41,6 @@ export const ProgressBar = ({ atteint, max }: Props) => {
           </Tooltip>
         </TooltipProvider>
       </div>
-      <span className="inline pt-1">{max}€</span>
     </>
   );
 };

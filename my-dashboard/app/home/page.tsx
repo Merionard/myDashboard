@@ -1,9 +1,10 @@
 import { Typography } from "@/components/ui/Typography";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Euro } from "lucide-react";
+import { Euro, Info } from "lucide-react";
 import ProgressBar from "../../components/ui/testProgress";
 import { prisma } from "@/prisma/client";
 import { getRequiredAuthSession } from "@/lib/auth";
+import CaInfo from "./caInfo";
 
 export default async function HomePage() {
   const today = new Date();
@@ -77,8 +78,22 @@ export default async function HomePage() {
                 </p>
               </CardContent>
             </Card>
-
-            <ProgressBar max={72500} atteint={currentCA._sum.totalTTC ?? 0} />
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <h3 className="tracking-tight text-sm font-medium">
+                    Progression CA/plafond
+                  </h3>
+                  <CaInfo />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ProgressBar
+                  max={72500}
+                  atteint={currentCA._sum.totalTTC ?? 0}
+                />
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
