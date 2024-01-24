@@ -1,14 +1,13 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAuthSession, getRequiredAuthSession } from "@/lib/auth";
+import ProgressBar from "@/components/ui/testProgress";
+import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/prisma/client";
 import { AlertTriangle, Check, Euro } from "lucide-react";
-import CaInfo from "./caInfo";
 import Link from "next/link";
-import { TypeActiviteEnums } from "../myAccount/userSchema";
-import ProgressBar from "@/components/ui/testProgress";
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
+import { TypeActiviteEnums } from "../myAccount/userSchema";
+import CaInfo from "./caInfo";
 
 export default async function HomePage() {
   const today = new Date();

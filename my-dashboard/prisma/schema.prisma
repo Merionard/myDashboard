@@ -46,6 +46,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   typeActivite  String?
+  todo        TodoList[]
 }
 
 model Customer {
@@ -150,7 +151,21 @@ model InvoiceLine {
 }
 
 model TodoList {
+  theme   String @id
+  user    User @relation(fields:[userId],references:[id])
+  userId  String
+  tasks   Task[]
+}
+
+model Task {
   id      Int @id @default(autoincrement())
+  TodoList  TodoList @relation(fields:[theme],references:[theme],onDelete:Cascade, onUpdate: Cascade)
+  theme  String
+  priority    TaskPriority
+  title     String
+  description String?
+  status    TaskStatus
+
 }
 
 model Compteur {
@@ -175,4 +190,14 @@ enum InvoiceType {
 enum Role {
   USER
   ADMIN
+}
+enum TaskPriority {
+  MINOR
+  MAJOR
+  CRITICAL
+}
+
+enum TaskStatus {
+  OPEN
+  DONE
 }

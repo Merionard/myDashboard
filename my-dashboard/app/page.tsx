@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { lusitana } from "@/components/ui/font";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Page() {
   return (
