@@ -149,6 +149,10 @@ model InvoiceLine {
 
 }
 
+model TodoList {
+  id      Int @id @default(autoincrement())
+}
+
 model Compteur {
   type  InvoiceType @id
   count Int

@@ -1,7 +1,13 @@
 "use client";
 
 import clsx from "clsx";
-import { CalendarDays, Home, Receipt, UsersRound } from "lucide-react";
+import {
+  CalendarDays,
+  Home,
+  ListTodo,
+  Receipt,
+  UsersRound,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,6 +25,11 @@ const links = [
     name: "CRA",
     href: "/MyAE/cra",
     icon: CalendarDays,
+  },
+  {
+    name: "Todo",
+    href: "/MyAE/todo",
+    icon: ListTodo,
   },
 ];
 
