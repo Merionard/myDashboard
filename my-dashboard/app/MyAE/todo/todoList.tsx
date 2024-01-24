@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlusCircle } from "lucide-react";
+import { ChevronDown, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -164,54 +164,62 @@ export const Todos = ({
             </CardHeader>
             <CardContent>
               {t.tasks.map((t) => (
-                <DropdownMenu key={t.id}>
-                  <DropdownMenuTrigger asChild>
-                    <div
-                      className={clsx(
-                        "border-b-2 ps-3 flex items-center gap-3 mb-3 rounded-md cursor-pointer",
-                        { "bg-orange-200": t.priority === "MINOR" },
-                        { "bg-red-400": t.priority === "CRITICAL" },
-                        { "bg-lime-500": t.priority === "MAJOR" }
-                      )}
+                <div
+                  key={t.id}
+                  className={clsx(
+                    "border-b-2 ps-3 flex justify-between mb-3 rounded-md cursor-pointer p-3",
+                    { "bg-orange-200": t.priority === "MINOR" },
+                    { "bg-red-400": t.priority === "CRITICAL" },
+                    { "bg-lime-500": t.priority === "MAJOR" }
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      checked={t.status === "DONE"}
+                      onCheckedChange={(e) => checkTask(e.valueOf(), t.id)}
+                    />
+                    <p
+                      className={clsx({
+                        "line-through": t.status === "DONE",
+                      })}
                     >
-                      <Checkbox
-                        checked={t.status === "DONE"}
-                        onCheckedChange={(e) => checkTask(e.valueOf(), t.id)}
-                      />
-                      <p
-                        className={clsx({
-                          "line-through": t.status === "DONE",
-                        })}
+                      {t.title}
+                    </p>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <ChevronDown />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Priorité</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuCheckboxItem
+                        checked={t.priority === "CRITICAL"}
+                        onClick={() =>
+                          setTaskPriority(TaskPriority.CRITICAL, t.id)
+                        }
                       >
-                        {t.title}
-                      </p>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Priorité</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem
-                      checked={t.priority === "CRITICAL"}
-                      onClick={() =>
-                        setTaskPriority(TaskPriority.CRITICAL, t.id)
-                      }
-                    >
-                      {TaskPriority.CRITICAL}
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={t.priority === "MAJOR"}
-                      onClick={() => setTaskPriority(TaskPriority.MAJOR, t.id)}
-                    >
-                      {TaskPriority.MAJOR}
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={t.priority === "MINOR"}
-                      onClick={() => setTaskPriority(TaskPriority.MINOR, t.id)}
-                    >
-                      {TaskPriority.MINOR}
-                    </DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                        {TaskPriority.CRITICAL}
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={t.priority === "MAJOR"}
+                        onClick={() =>
+                          setTaskPriority(TaskPriority.MAJOR, t.id)
+                        }
+                      >
+                        {TaskPriority.MAJOR}
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={t.priority === "MINOR"}
+                        onClick={() =>
+                          setTaskPriority(TaskPriority.MINOR, t.id)
+                        }
+                      >
+                        {TaskPriority.MINOR}
+                      </DropdownMenuCheckboxItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               ))}
             </CardContent>
           </Card>
