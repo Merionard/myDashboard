@@ -1,10 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserForm } from "./userForm";
-import { getRequiredAuthSession } from "@/lib/auth";
+import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/prisma/client";
+import { UserForm } from "./userForm";
+import { redirect } from "next/navigation";
 
 export default async function MyAccount() {
-  const session = await getRequiredAuthSession();
+  const session = await getAuthSession();
+
+  if (session == null || !session.user.id) {
+    return redirect("/");
+  }
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) {
     throw new Error("User inconnu!");

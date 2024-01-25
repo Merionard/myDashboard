@@ -3,7 +3,7 @@
 import { prisma } from "@/prisma/client";
 import { Task, TaskStatus } from "@prisma/client";
 
-export const createTheme = async (title: string, userId: string) => {
+export const createTodoList = async (title: string, userId: string) => {
   const theme = await prisma.todoList.findUnique({
     where: { title: title.trim().toUpperCase() },
   });
@@ -72,4 +72,12 @@ export const reorderTask = async (tasks: Task[]) => {
     });
   }
   return "liste mise à jour avec succès";
+};
+
+export const updateTodoList = async (newTitle: string, prevTitle: string) => {
+  const test = await prisma.todoList.update({
+    where: { title: prevTitle },
+    data: { title: newTitle },
+  });
+  return test;
 };

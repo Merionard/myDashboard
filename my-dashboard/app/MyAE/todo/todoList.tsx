@@ -19,7 +19,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ListItem } from "./listItem";
 import { TodoListWithTask } from "./page";
-import { createTheme } from "./todoAction";
+import { createTodoList } from "./todoAction";
 
 export const Todos = ({
   userId,
@@ -34,7 +34,7 @@ export const Todos = ({
 
   const addTheme = async () => {
     if (newThemeName) {
-      const { data, error } = await createTheme(newThemeName, userId);
+      const { data, error } = await createTodoList(newThemeName, userId);
       if (data) {
         toast.success("thème " + data.title + " créé avec succès!");
         router.refresh();

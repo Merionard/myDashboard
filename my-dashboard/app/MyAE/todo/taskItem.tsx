@@ -39,7 +39,7 @@ export const TaskItem = ({
     <div
       ref={provided.innerRef}
       className={clsx(
-        "border-b-2 ps-3 flex justify-between mb-3 rounded-md  p-3"
+        "border-b-2 ps-3 flex justify-between mb-3 rounded-md  p-3 bg-green-400"
       )}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
@@ -57,7 +57,10 @@ export const TaskItem = ({
           {task.title}
         </p>
       </div>
-      <Trash onClick={() => onClickDelete(task.id)} />
+      <Trash
+        onClick={() => onClickDelete(task.id)}
+        className="cursor-pointer"
+      />
     </div>
   );
 };

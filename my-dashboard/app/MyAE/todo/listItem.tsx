@@ -20,11 +20,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { TaskItem } from "./taskItem";
-import { addTask, deleteTodoList, reorderTask } from "./todoAction";
+import {
+  addTask,
+  deleteTodoList,
+  reorderTask,
+  updateTodoList,
+} from "./todoAction";
 import { toast } from "sonner";
 import {
   DragDropContext,
@@ -43,6 +48,7 @@ export const ListItem = ({ todoList }: { todoList: TodoListWithTask }) => {
     undefined | string
   >(undefined);
   const [tasks, setTasks] = useState([...todoList.tasks]);
+  const [todoListTitle, setTodoListTitle] = useState(todoList.title);
 
   const newTask = async (theme: string, maxOrder: number) => {
     if (newTaskName) {
@@ -85,12 +91,45 @@ export const ListItem = ({ todoList }: { todoList: TodoListWithTask }) => {
       toast.error("une erreur est survenue");
     }
   };
+
+  const editTodoListTitle = async () => {
+    await updateTodoList(todoListTitle, todoList.title);
+    toast.success("liste mise à jour");
+    router.refresh();
+  };
   const router = useRouter();
   return (
     <Card key={todoList.title}>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
-          {todoList.title}
+          <div>
+            <span>{todoList.title}</span>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Pencil className="inline ms-1 cursor-pointer h-5" />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Maj titre liste</AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-2">
+                    <div>
+                      <Label>Titre</Label>
+                      <Input
+                        placeholder="titre"
+                        onChange={(e) => setTodoListTitle(e.target.value)}
+                      />
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction onClick={editTodoListTitle}>
+                    Valider
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="rounded-full" size={"icon"}>

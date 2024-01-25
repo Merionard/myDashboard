@@ -23,7 +23,7 @@ export default async function TodoList() {
     <div className="container mt-5">
       <Card>
         <CardHeader>
-          <CardTitle>TODO LIST</CardTitle>
+          <CardTitle>TODO</CardTitle>
         </CardHeader>
         <CardContent>
           <Todos todoList={todoList} userId={session.user.id} />
