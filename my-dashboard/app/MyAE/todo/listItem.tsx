@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TodoListWithTask } from "./page";
 import { useRouter } from "next/navigation";
 import {
@@ -24,7 +24,7 @@ import { Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { TaskItem } from "./taskItem";
-import { addTask, deleteTodoList } from "./todoAction";
+import { addTask, deleteTodoList, reorderTask } from "./todoAction";
 import { toast } from "sonner";
 import {
   DragDropContext,
@@ -34,10 +34,16 @@ import {
 } from "react-beautiful-dnd";
 
 export const ListItem = ({ todoList }: { todoList: TodoListWithTask }) => {
+  useEffect(() => {
+    setTasks([...todoList.tasks]);
+  }, [todoList]);
+
   const [newTaskName, setNewTaskName] = useState<null | string>(null);
   const [newTaskDescription, setNewTaskDescritpion] = useState<
     undefined | string
   >(undefined);
+  const [tasks, setTasks] = useState([...todoList.tasks]);
+
   const newTask = async (theme: string, maxOrder: number) => {
     if (newTaskName) {
       const newTask = await addTask(
@@ -50,6 +56,7 @@ export const ListItem = ({ todoList }: { todoList: TodoListWithTask }) => {
       router.refresh();
     }
   };
+
   const handleDeleteList = async (title: string) => {
     const deleteList = await deleteTodoList(title);
     if (deleteList) {
@@ -59,12 +66,24 @@ export const ListItem = ({ todoList }: { todoList: TodoListWithTask }) => {
       toast.error("une erreur est survenue");
     }
   };
-  const onDragEnd = (result: DropResult) => {
+
+  const onDragEnd = async (result: DropResult) => {
     if (!result.destination) {
-      return; // L'élément a été déplacé en dehors de la liste, aucune action nécessaire
+      return;
     }
 
-    console.log(result);
+    const cloneTasks = [...tasks];
+    const [removed] = cloneTasks.splice(result.source.index, 1);
+
+    cloneTasks.splice(result.destination.index, 0, removed);
+    cloneTasks.forEach((c, index) => (c.order = index + 1));
+    setTasks(cloneTasks);
+    const msg = await reorderTask(cloneTasks);
+    if (msg) {
+      toast.success(msg);
+    } else {
+      toast.error("une erreur est survenue");
+    }
   };
   const router = useRouter();
   return (
@@ -119,34 +138,27 @@ export const ListItem = ({ todoList }: { todoList: TodoListWithTask }) => {
       </CardHeader>
       <CardContent>
         <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {(provided: any) => (
+          <Droppable droppableId={`droppable${todoList.title}`}>
+            {(provided) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={"d-flex flex-column gap-2"}
-                style={{ width: "50%" }}
+                className={"d-flex flex-column gap-2 w-full"}
               >
-                {todoList.tasks.map((t, index) => (
+                {tasks.map((t, index) => (
                   <Draggable
-                    key={t.order}
-                    draggableId={String(t.order)}
+                    key={index}
+                    draggableId={`draggable${String(index)}`}
                     index={index}
                   >
-                    {(provided: any) => (
-                      <div ref={provided.innerRef}>
-                        <TaskItem task={t} />
-                      </div>
-                    )}
+                    {(provided) => <TaskItem task={t} provided={provided} />}
                   </Draggable>
                 ))}
+                {provided.placeholder}
               </div>
             )}
           </Droppable>
         </DragDropContext>
-        {todoList.tasks.map((t) => (
-          <TaskItem key={t.id} task={t} />
-        ))}
       </CardContent>
       <AlertDialog>
         <CardFooter className="flex justify-end">

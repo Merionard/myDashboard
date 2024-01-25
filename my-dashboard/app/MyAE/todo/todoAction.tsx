@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/prisma/client";
-import { TaskStatus } from "@prisma/client";
+import { Task, TaskStatus } from "@prisma/client";
 
 export const createTheme = async (title: string, userId: string) => {
   const theme = await prisma.todoList.findUnique({
@@ -62,4 +62,14 @@ export const deleteTask = async (taskId: number) => {
 export const deleteTodoList = async (title: string) => {
   const deletedList = await prisma.todoList.delete({ where: { title: title } });
   return deletedList;
+};
+
+export const reorderTask = async (tasks: Task[]) => {
+  for (const task of tasks) {
+    await prisma.task.update({
+      where: { id: task.id },
+      data: { order: task.order },
+    });
+  }
+  return "liste mise à jour avec succès";
 };

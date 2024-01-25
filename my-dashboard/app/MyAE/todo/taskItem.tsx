@@ -5,8 +5,15 @@ import { changeStatutTask, deleteTask } from "./todoAction";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Trash } from "lucide-react";
+import { DraggableProvided } from "react-beautiful-dnd";
 
-export const TaskItem = ({ task }: { task: Task }) => {
+export const TaskItem = ({
+  task,
+  provided,
+}: {
+  task: Task;
+  provided: DraggableProvided;
+}) => {
   const router = useRouter();
 
   const checkTask = async (check: boolean | string, taskId: number) => {
@@ -30,10 +37,12 @@ export const TaskItem = ({ task }: { task: Task }) => {
   };
   return (
     <div
-      key={task.id}
+      ref={provided.innerRef}
       className={clsx(
-        "border-b-2 ps-3 flex justify-between mb-3 rounded-md cursor-pointer p-3"
+        "border-b-2 ps-3 flex justify-between mb-3 rounded-md  p-3"
       )}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
     >
       <div className="flex items-center gap-3">
         <Checkbox

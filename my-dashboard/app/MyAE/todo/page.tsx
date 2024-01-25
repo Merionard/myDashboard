@@ -17,7 +17,7 @@ export default async function TodoList() {
   }
   const todoList: TodoListWithTask[] = await prisma.todoList.findMany({
     where: { userId: session.user.id },
-    include: { tasks: { orderBy: { order: "desc" } } },
+    include: { tasks: { orderBy: { order: "asc" } } },
   });
   return (
     <div className="container mt-5">
