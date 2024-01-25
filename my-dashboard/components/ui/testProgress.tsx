@@ -15,7 +15,7 @@ export const ProgressBar = ({ atteint, max }: Props) => {
 
   return (
     <>
-      <div className="w-56">
+      <div className="w-full">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger className="w-full">

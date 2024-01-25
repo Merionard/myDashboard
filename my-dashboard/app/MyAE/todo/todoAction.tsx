@@ -77,7 +77,17 @@ export const reorderTask = async (tasks: Task[]) => {
 export const updateTodoList = async (newTitle: string, prevTitle: string) => {
   const test = await prisma.todoList.update({
     where: { title: prevTitle },
-    data: { title: newTitle },
+    data: { title: newTitle.trim().toUpperCase() },
   });
   return test;
+};
+
+export const toogleCriticalTask = async (
+  isCritical: boolean,
+  taskId: number
+) => {
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { critical: isCritical },
+  });
 };

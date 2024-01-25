@@ -15,7 +15,7 @@ export default async function HomePage() {
   const endOfYear = new Date(today.getFullYear() + 1, 0, 0);
   const session = await getAuthSession();
 
-  if (session == null) {
+  if (session == null || !session.user.id) {
     return redirect("/");
   }
 
@@ -58,6 +58,13 @@ export default async function HomePage() {
     (a) => a.type === user?.typeActivite
   )?.plafond;
 
+  const criticalTasks = await prisma.task.findMany({
+    where: {
+      TodoList: { user: { id: session.user.id } },
+      AND: { critical: true, status: "OPEN" },
+    },
+  });
+
   return (
     <div className="container mt-5">
       <Card>
@@ -65,7 +72,7 @@ export default async function HomePage() {
           <CardTitle>Dashobard</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-3 md:flex-row">
+          <div className="grid grid-cols-4 gap-3">
             <Card>
               <CardHeader>
                 <div className="flex justify-between items-center">
@@ -98,7 +105,7 @@ export default async function HomePage() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="col-span-2">
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <h3 className="tracking-tight text-sm font-medium">
@@ -144,6 +151,33 @@ export default async function HomePage() {
                     {lateInvoices.map((i) => (
                       <li key={i.id}>
                         <Link href={`/invoice/view/${i.id}`}>{i.number}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <h3 className="tracking-tight text-sm font-medium">
+                    TODO URGENT!
+                  </h3>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {criticalTasks.length === 0 ? (
+                  <p className="text-2xl font-bold flex justify-center items-center">
+                    Aucune tache urgente! <Check color="green" />
+                  </p>
+                ) : (
+                  <ul className="list-disc list-inside">
+                    {criticalTasks.map((task) => (
+                      <li
+                        key={task.id}
+                        className="text-lg font-medium text-gray-800 mb-2"
+                      >
+                        {task.title}
                       </li>
                     ))}
                   </ul>

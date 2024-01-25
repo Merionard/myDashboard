@@ -166,6 +166,7 @@ model Task {
   description String?
   status    TaskStatus
   createdAt DateTime
+  critical  Boolean    @default(false)
 
 }
 

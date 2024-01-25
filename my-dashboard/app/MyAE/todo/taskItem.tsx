@@ -1,10 +1,10 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Task } from "@prisma/client";
 import clsx from "clsx";
-import { changeStatutTask, deleteTask } from "./todoAction";
+import { changeStatutTask, deleteTask, toogleCriticalTask } from "./todoAction";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Trash } from "lucide-react";
+import { Megaphone, MegaphoneOff, Trash } from "lucide-react";
 import { DraggableProvided } from "react-beautiful-dnd";
 
 export const TaskItem = ({
@@ -35,11 +35,17 @@ export const TaskItem = ({
       toast.error("Une erreur est survenue");
     }
   };
+
+  const toogleCritical = async () => {
+    await toogleCriticalTask(!task.critical, task.id);
+    router.refresh();
+  };
   return (
     <div
       ref={provided.innerRef}
       className={clsx(
-        "border-b-2 ps-3 flex justify-between mb-3 rounded-md  p-3 bg-green-400"
+        "border-b-2 ps-3 flex justify-between mb-3 rounded-md  p-3 ",
+        { "bg-red-500": task.critical, "bg-green-400": !task.critical }
       )}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
@@ -57,10 +63,18 @@ export const TaskItem = ({
           {task.title}
         </p>
       </div>
-      <Trash
-        onClick={() => onClickDelete(task.id)}
-        className="cursor-pointer"
-      />
+      <div className="flex gap-2">
+        {task.critical ? (
+          <MegaphoneOff className="cursor-pointer" onClick={toogleCritical} />
+        ) : (
+          <Megaphone className="cursor-pointer" onClick={toogleCritical} />
+        )}
+
+        <Trash
+          onClick={() => onClickDelete(task.id)}
+          className="cursor-pointer"
+        />
+      </div>
     </div>
   );
 };
