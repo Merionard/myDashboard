@@ -1,56 +1,65 @@
 "use server";
 
 import { prisma } from "@/prisma/client";
-import { TaskPriority, TaskStatus } from "@prisma/client";
+import { TaskStatus } from "@prisma/client";
 
-export const createTheme = async (themeName: string, userId: string) => {
+export const createTheme = async (title: string, userId: string) => {
   const theme = await prisma.todoList.findUnique({
-    where: { theme: themeName.trim().toUpperCase() },
+    where: { title: title.trim().toUpperCase() },
   });
   if (!theme) {
-    const newTheme = await prisma.todoList.create({
+    const newList = await prisma.todoList.create({
       data: {
-        theme: themeName.trim().toUpperCase(),
+        title: title.trim().toUpperCase(),
         userId: userId,
       },
     });
-    return { data: newTheme };
+    return { data: newList };
   }
-  return { error: "ce thème existe déjà" };
+  return { error: "cette liste existe déjà" };
 };
 
 export const addTask = async (
-  theme: string,
+  listTitle: string,
   title: string,
-  description: string | undefined
+  description: string | undefined,
+  order: number
 ) => {
   const newTask = await prisma.task.create({
     data: {
-      priority: "MAJOR",
+      order: order,
       status: "OPEN",
       title: title,
       description: description,
-      theme: theme,
+      listTitle: listTitle,
+      createdAt: new Date(),
     },
   });
   return newTask;
 };
 
-export const changePriorityTask = async (
-  priority: TaskPriority,
-  taskId: number
-) => {
-  const updatedTask = prisma.task.update({
+export const changePriorityTask = async (order: number, taskId: number) => {
+  const updatedTask = await prisma.task.update({
     where: { id: taskId },
-    data: { priority: priority },
+    data: { order: order },
   });
   return updatedTask;
 };
 
 export const changeStatutTask = async (status: TaskStatus, taskId: number) => {
-  const updatedTask = prisma.task.update({
+  const updatedTask = await prisma.task.update({
     where: { id: taskId },
     data: { status: status },
   });
   return updatedTask;
+};
+
+export const deleteTask = async (taskId: number) => {
+  const deletedTask = await prisma.task.delete({ where: { id: taskId } });
+  return deletedTask;
+};
+
+export const deleteTodoList = async (title: string) => {
+  const deletedList = await prisma.todoList.delete({ where: { title: title } });
+  return deletedList;
 };

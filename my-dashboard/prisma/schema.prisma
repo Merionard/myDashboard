@@ -151,7 +151,7 @@ model InvoiceLine {
 }
 
 model TodoList {
-  theme   String @id
+  title   String @id
   user    User @relation(fields:[userId],references:[id])
   userId  String
   tasks   Task[]
@@ -159,12 +159,13 @@ model TodoList {
 
 model Task {
   id      Int @id @default(autoincrement())
-  TodoList  TodoList @relation(fields:[theme],references:[theme],onDelete:Cascade, onUpdate: Cascade)
-  theme  String
-  priority    TaskPriority
-  title     String
+  TodoList  TodoList @relation(fields:[listTitle],references:[title],onDelete:Cascade, onUpdate: Cascade)
+  listTitle  String
+  order  Int @default(1)
+  title     String 
   description String?
   status    TaskStatus
+  createdAt DateTime
 
 }
 
