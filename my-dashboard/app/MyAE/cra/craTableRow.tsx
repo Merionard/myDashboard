@@ -56,11 +56,14 @@ export default function CraTableRow({
   month,
   holidays,
 }: Props) {
-  const [selectedCustomer, setSelectedCustomer] = useState(
-    customers.find((c) => c.id === workLine.customerId) ?? customers.length > 0
-      ? customers[0]
-      : null
+  const [selectedCustomer, setSelectedCustomer] = useState(() =>
+    initSelectedCustomer()
   );
+
+  function initSelectedCustomer() {
+    const customer = customers.find((c) => c.id === workLine.customerId);
+    return customer ? customer : customers.length > 0 ? customers[0] : null;
+  }
 
   const isWeekEnd = (date: Date) => {
     return (

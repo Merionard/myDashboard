@@ -12,7 +12,7 @@ export default async function handler(
       where: { id: workPeriodLine.id },
       data: { ...workPeriodLine },
     });
-    res.status(200).json({ ...updatedWorkPeriodLine });
+    res.status(200).json(JSON.stringify(updatedWorkPeriodLine));
   } else {
     res.status(405).json({ message: "Method not allowed" });
   }
