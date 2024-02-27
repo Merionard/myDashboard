@@ -35,7 +35,7 @@ export const Authentication = () => {
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  src={session.user.image || undefined}
                   alt="My picture"
                 />
                 <AvatarFallback>CN</AvatarFallback>

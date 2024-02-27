@@ -4,6 +4,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import { Header } from "./layout/header";
 import SideNav from "./layout/sidenav";
+import { Footer } from "./layout/footer";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
@@ -17,7 +18,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
             {children}
           </main>
         </div>
-        <footer className="bg-gray-100">Footer</footer>
+        <Footer />
       </div>
     </NextThemesProvider>
   );
