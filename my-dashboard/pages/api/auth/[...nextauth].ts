@@ -14,6 +14,7 @@ export const authOptions: AuthOptions = {
     }),
     // ...add more providers here
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, user }) {
       if (session.user) {
