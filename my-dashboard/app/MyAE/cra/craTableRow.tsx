@@ -138,6 +138,7 @@ export default function CraTableRow({
           isDateEqual(w.date, date)
         );
         if (workDayToDelete) {
+          // @ts-ignore
           const workDay = await deleteWorkDay(workDayToDelete);
           if (workDay) {
             toast.success("Suppression effectuée avec succès!");
@@ -152,6 +153,7 @@ export default function CraTableRow({
         );
         if (workDayToUpdate) {
           const updatedWorkDay = await updateWorkDay(
+            // @ts-ignore
             workDayToUpdate,
             Number(duration)
           );
