@@ -1,13 +1,5 @@
-import { prisma } from "@/prisma/client";
-import { Invoice, InvoiceLine } from "../../invoiceSchema";
-import {
-  ConditionsReglementType,
-  ModeReglementType,
-  ServiceType,
-} from "@/src/enums";
-import { InvoiceForm } from "../../new/invoiceForm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/Typography";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -16,8 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { prisma } from "@/prisma/client";
+import {
+  ConditionsReglementType,
+  ModeReglementType,
+  ServiceType,
+} from "@/src/enums";
 import clsx from "clsx";
+import { Invoice, InvoiceLine } from "../../invoiceSchema";
 
 export default async function ViewInvoice({
   params,
@@ -56,7 +54,7 @@ export default async function ViewInvoice({
     deletedLines: [],
   };
   return (
-    <div className="container">
+    <div className="container mx-auto py-10">
       <Card>
         <CardHeader className="bg-primary-foreground">
           <CardTitle>Facture {prismaInvoice.number}</CardTitle>

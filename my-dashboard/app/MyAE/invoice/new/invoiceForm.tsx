@@ -359,7 +359,7 @@ export const InvoiceForm = ({ customers, invoiceToEdit, userId }: Props) => {
         />
       </div>
       <div className="flex justify-between mt-3">
-        <Link href={"/invoice"}>
+        <Link href={"/MyAE/invoice"}>
           <Button variant={"destructive"}>Annuler</Button>
         </Link>
         <Button onClick={saveInvoice}>Enregistrer</Button>

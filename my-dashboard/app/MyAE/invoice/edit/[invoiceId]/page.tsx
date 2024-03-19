@@ -6,12 +6,21 @@ import {
   ServiceType,
 } from "@/src/enums";
 import { InvoiceForm } from "../../new/invoiceForm";
+import { getAuthSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default async function EditInvoice({
   params,
 }: {
   params: { invoiceId: string };
 }) {
+  const session = await getAuthSession();
+
+  if (session == null || !session.user.id) {
+    return redirect("/");
+  }
+
   const customers = await prisma.customer.findMany({
     include: { contact: true, address: true },
     orderBy: { id: "desc" },
@@ -47,5 +56,17 @@ export default async function EditInvoice({
     lines: invoiceFormLines,
     deletedLines: [],
   };
-  return <InvoiceForm customers={customers} invoiceToEdit={invoice} />;
+  return (
+    <div className="container mx-auto py-10">
+      <Card>
+        <CardContent>
+          <InvoiceForm
+            customers={customers}
+            invoiceToEdit={invoice}
+            userId={session.user.id}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
