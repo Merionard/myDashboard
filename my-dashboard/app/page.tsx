@@ -17,8 +17,11 @@ export default function Page() {
             votre auto-entreprise.
           </p>
           <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" />
-          <Button onClick={() => signIn()}>Se connecter</Button>
+          <Button className="w-1/3" onClick={() => signIn()}>
+            Se connecter
+          </Button>
         </div>
+
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           <Image
             src="/login_image.jpg"

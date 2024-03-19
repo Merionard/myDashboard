@@ -157,7 +157,7 @@ const Actions = (props: { invoice: Invoice }) => {
   const router = useRouter();
 
   const editAction = (
-    <Link href={`/invoice/edit/${props.invoice.id}`}>
+    <Link href={`/MyAE/invoice/edit/${props.invoice.id}`}>
       <Button size={"icon"} title="Editer" className="bg-orange-500">
         <Pencil size={16} />
       </Button>
@@ -165,7 +165,7 @@ const Actions = (props: { invoice: Invoice }) => {
   );
 
   const showAction = (
-    <Link href={`/invoice/view/${props.invoice.id}`}>
+    <Link href={`/MyAE/invoice/view/${props.invoice.id}`}>
       <Button size={"icon"} title="show">
         <Eye />
       </Button>

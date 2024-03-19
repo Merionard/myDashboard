@@ -288,94 +288,81 @@ export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
   };
 
   return (
-    <div className="container">
-      <Card>
-        <CardHeader className="bg-primary-foreground">
-          <CardTitle>
-            {invoiceToEdit ? "Edition facture " : "Nouvelle Facture"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {validationMsg && (
-            <Alert variant={"destructive"}>
-              <Terminal className="h-4 w-4" />
-              <AlertTitle>Erreurs de validation</AlertTitle>
-              <AlertDescription>{validationMsg}</AlertDescription>
-            </Alert>
-          )}
+    <div>
+      <Typography variant={"h2"} className="pt-3 mb-3">
+        {invoiceToEdit ? "Edition facture " : "Nouvelle Facture"}
+      </Typography>
 
-          <SelectCustomer
-            customers={customers}
-            selectedCustomer={selectedCustomer}
-            onSelectCustomer={onSelectCustomer}
-          />
+      {validationMsg && (
+        <Alert variant={"destructive"}>
+          <Terminal className="h-4 w-4" />
+          <AlertTitle>Erreurs de validation</AlertTitle>
+          <AlertDescription>{validationMsg}</AlertDescription>
+        </Alert>
+      )}
 
-          <Typography variant={"h3"} className="mt-3">
-            Articles
-          </Typography>
-          {invoice.lines.map((line) => (
-            <InvoiceLineForm
-              key={line.ihmId}
-              line={line}
-              onChangeLineCallBack={onChangeLine}
-              deleteLine={deleteLine}
-              duplicateLine={duplicateLine}
-              onSelectType={onSelectType}
-            />
+      <SelectCustomer
+        customers={customers}
+        selectedCustomer={selectedCustomer}
+        onSelectCustomer={onSelectCustomer}
+      />
+
+      <Typography variant={"h3"} className="mt-3">
+        Articles
+      </Typography>
+      {invoice.lines.map((line) => (
+        <InvoiceLineForm
+          key={line.ihmId}
+          line={line}
+          onChangeLineCallBack={onChangeLine}
+          deleteLine={deleteLine}
+          duplicateLine={duplicateLine}
+          onSelectType={onSelectType}
+        />
+      ))}
+      <Button onClick={addLine} className="mt-2">
+        Ajouter une ligne
+      </Button>
+
+      <Table className="w-1/4 mt-5">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="border text-center">TAUX DE TAXE</TableHead>
+            <TableHead className="border text-center">TAXE TOTALE</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {linesGroupByTaxRate.map((l) => (
+            <TableRow key={l.vatRate}>
+              <TableCell className="text-right border">{l.vatRate}%</TableCell>
+              <TableCell className="text-right border">{l.total} €</TableCell>
+            </TableRow>
           ))}
-          <Button onClick={addLine} className="mt-2">
-            Ajouter une ligne
-          </Button>
+        </TableBody>
+      </Table>
 
-          <Table className="w-1/4 mt-5">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="border text-center">
-                  TAUX DE TAXE
-                </TableHead>
-                <TableHead className="border text-center">
-                  TAXE TOTALE
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {linesGroupByTaxRate.map((l) => (
-                <TableRow key={l.vatRate}>
-                  <TableCell className="text-right border">
-                    {l.vatRate}%
-                  </TableCell>
-                  <TableCell className="text-right border">
-                    {l.total} €
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <div className="flex justify-between items-end mt-3">
-            <Conditions
-              invoice={invoice}
-              updateInvoiceConditionReg={(val) =>
-                setInvoice((prev) => ({ ...prev, conditionReglement: val }))
-              }
-              updateInvoiceModeReg={(val) =>
-                setInvoice((prev) => ({ ...prev, modeReglement: val }))
-              }
-            />
-            <Total
-              totalHT={total.totalHT}
-              totalTTC={total.totalTTC}
-              totalVAT={total.totalVAT}
-            />
-          </div>
-          <div className="flex justify-between mt-3">
-            <Link href={"/invoice"}>
-              <Button variant={"destructive"}>Annuler</Button>
-            </Link>
-            <Button onClick={saveInvoice}>Enregistrer</Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex justify-between items-end mt-3">
+        <Conditions
+          invoice={invoice}
+          updateInvoiceConditionReg={(val) =>
+            setInvoice((prev) => ({ ...prev, conditionReglement: val }))
+          }
+          updateInvoiceModeReg={(val) =>
+            setInvoice((prev) => ({ ...prev, modeReglement: val }))
+          }
+        />
+        <Total
+          totalHT={total.totalHT}
+          totalTTC={total.totalTTC}
+          totalVAT={total.totalVAT}
+        />
+      </div>
+      <div className="flex justify-between mt-3">
+        <Link href={"/invoice"}>
+          <Button variant={"destructive"}>Annuler</Button>
+        </Link>
+        <Button onClick={saveInvoice}>Enregistrer</Button>
+      </div>
     </div>
   );
 };
