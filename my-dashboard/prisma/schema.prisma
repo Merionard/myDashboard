@@ -47,6 +47,8 @@ model User {
   sessions      Session[]
   typeActivite  String?
   todo        TodoList[]
+  customers   Customer[]
+  invoices    Invoice[]
 }
 
 model Customer {
@@ -56,6 +58,8 @@ model Customer {
   siren           String? @unique
   address         Address[]
   contact         Contact?
+  user    User @relation(fields:[userId],references:[id])
+  userId  String
 }
 
 model Contact {
@@ -133,6 +137,8 @@ model Invoice {
   lines       InvoiceLine[]
   totalHT     Float
   totalTTC    Float
+  user    User @relation(fields:[userId],references:[id])
+  userId  String
 
 }
 

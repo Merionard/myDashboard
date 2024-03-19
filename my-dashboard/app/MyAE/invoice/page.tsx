@@ -14,7 +14,10 @@ export default async function InvoiceDatatalbe() {
   if (session == null) {
     return redirect("/");
   }
-  const invoices = await prisma.invoice.findMany({ orderBy: { id: "desc" } });
+  const invoices = await prisma.invoice.findMany({
+    where: { userId: session.user.id },
+    orderBy: { id: "desc" },
+  });
 
   return (
     <div className="container mx-auto mt-5">

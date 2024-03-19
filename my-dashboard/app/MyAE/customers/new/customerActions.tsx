@@ -10,6 +10,7 @@ export const newCustomerAction = authenticatedAction(
       data: {
         businessName: data.businessName,
         siren: data.siren,
+        userId: data.userId,
         address: data.firstAddress
           ? {
               create: {

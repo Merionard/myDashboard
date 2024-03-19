@@ -24,6 +24,7 @@ export const customerSchema = z.object({
   contact: customerContactSchema.nullable().optional(),
   firstAddress: customerAddressSchema.optional(),
   address: z.array(customerAddressSchema),
+  userId: z.string(),
 });
 
 export type Etablissement = {

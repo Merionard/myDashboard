@@ -25,6 +25,7 @@ import { CustomerComboBox } from "./searchCustomerComboBox";
 
 export function CustomerForm(props: {
   customer: z.infer<typeof customerSchema> | null;
+  userId: string;
 }) {
   const [showContact, setShowContact] = useState(
     props.customer != null && props.customer.contact != null
@@ -48,6 +49,7 @@ export function CustomerForm(props: {
           ? props.customer.address[0]
           : undefined
         : undefined,
+      userId: props.userId,
     },
   });
 

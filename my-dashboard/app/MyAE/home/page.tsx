@@ -25,6 +25,7 @@ export default async function HomePage() {
     where: {
       statut: "PAYED",
       validateAt: { gte: startOfYear, lt: endOfYear },
+      userId: session.user.id,
     },
     _sum: {
       totalTTC: true,
@@ -44,6 +45,7 @@ export default async function HomePage() {
     where: {
       dueDate: { lt: today },
       statut: "VALIDATED",
+      userId: session.user.id,
     },
   });
 

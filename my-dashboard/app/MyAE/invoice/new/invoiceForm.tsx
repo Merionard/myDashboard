@@ -3,7 +3,6 @@
 import { Typography } from "@/components/ui/Typography";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -28,13 +27,15 @@ import Total from "./total";
 type Props = {
   customers: CustomerWithAddressAndContact[];
   invoiceToEdit?: Invoice;
+  userId: string;
 };
-function initInvoice() {
+function initInvoice(userId: string) {
   const invoice: Invoice = {
     conditionReglement: "30 jours fin de mois",
     customerAddress: "",
     customerCountry: "",
     customerName: "",
+    userId: userId,
     lines: [
       {
         quantity: 0,
@@ -56,9 +57,9 @@ function initInvoice() {
   };
   return invoice;
 }
-export const InvoiceForm = ({ customers, invoiceToEdit }: Props) => {
+export const InvoiceForm = ({ customers, invoiceToEdit, userId }: Props) => {
   const [invoice, setInvoice] = useState<Invoice>(
-    () => invoiceToEdit ?? initInvoice()
+    () => invoiceToEdit ?? initInvoice(userId)
   );
   const [selectedCustomer, setSelectedCustomer] = useState<
     CustomerWithAddressAndContact | null | undefined

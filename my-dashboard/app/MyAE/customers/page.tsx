@@ -14,7 +14,9 @@ export default async function CustomersList() {
   if (session == null) {
     return redirect("/");
   }
-  const customers = await prisma.customer.findMany();
+  const customers = await prisma.customer.findMany({
+    where: { userId: session.user.id },
+  });
 
   return (
     <div className="container mx-auto mt-5">

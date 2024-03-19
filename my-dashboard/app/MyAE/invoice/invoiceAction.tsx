@@ -9,6 +9,7 @@ export const createInvoice = authenticatedAction(
     const newInvoice = await prisma.invoice.create({
       data: {
         conditionReglement: data.conditionReglement,
+        userId: data.userId,
         createdAt: new Date(),
         customerAddress: data.customerAddress,
         customerCountry: data.customerCountry,
